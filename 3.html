@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TwoHearts Apart 💕</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Nunito:wght@300;400;600;700;800&family=Dancing+Script:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════
+   ROOT
+══════════════════════════════════ */
+:root {
+  --pink:        #ff5c9e;
+  --pink-light:  #ffb3d9;
+  --pink-pale:   #fff0f7;
+  --pink-deep:   #c4005e;
+  --pink-glow:   rgba(255,92,158,.28);
+  --blue:        #3f8fd4;
+  --blue-light:  #9dd0f8;
+  --blue-pale:   #eef6ff;
+  --blue-deep:   #0d5fa3;
+  --blue-glow:   rgba(63,143,212,.28);
+  --gold:        #f9c946;
+  --white:       #ffffff;
+  --ink:         #2c1a3e;
+  --mid:         #6b5070;
+  --muted:       #a898b8;
+  --rad:         22px;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  font-family:'Nunito',sans-serif;
+  background:#faf5ff;
+  min-height:100vh; overflow-x:hidden;
+}
+
+/* ══════════════════════════════════
+   ANIMATED BG PETALS
+══════════════════════════════════ */
+#petals {
+  position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden;
+}
+.petal {
+  position:absolute;
+  animation:petalDrift var(--d,14s) ease-in-out infinite;
+  animation-delay:var(--dl,0s);
+  opacity:.08; font-size:var(--s,18px);
+}
+@keyframes petalDrift {
+  0%,100%{transform:translateY(0) rotate(0deg) scale(1);}
+  33%    {transform:translateY(-28px) rotate(12deg) scale(1.05);}
+  66%    {transform:translateY(14px) rotate(-9deg) scale(.97);}
+}
+
+/* ══════════════════════════════════
+   SETUP SCREEN
+══════════════════════════════════ */
+#setup {
+  position:relative; z-index:10;
+  min-height:100vh; display:flex;
+  flex-direction:column; align-items:center; justify-content:center;
+  padding:40px 16px;
+}
+.setup-wrap {
+  background:white;
+  border-radius:30px;
+  box-shadow:0 24px 80px rgba(180,100,220,.13), 0 4px 20px rgba(0,0,0,.06);
+  padding:48px 44px;
+  max-width:640px; width:100%;
+  position:relative; overflow:hidden;
+}
+.setup-wrap::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:5px;
+  background:linear-gradient(90deg,var(--pink),#b57bee,var(--blue));
+}
+.brand-logo {
+  text-align:center; margin-bottom:6px;
+  font-family:'Dancing Script',cursive; font-size:1.5rem; color:var(--mid);
+}
+.brand-logo b { color:var(--pink); font-weight:700; }
+.setup-title {
+  text-align:center; margin-bottom:6px;
+  font-family:'Playfair Display',serif; font-size:2rem; font-weight:700;
+  color:var(--ink); line-height:1.2;
+}
+.setup-sub {
+  text-align:center; font-size:.9rem; color:var(--muted); line-height:1.6;
+  margin-bottom:34px;
+}
+
+/* ROLE SELECTOR */
+.role-pick {
+  display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:32px;
+}
+.role-btn {
+  border:2px solid #e8d8f8; border-radius:16px; padding:20px 12px;
+  background:white; cursor:pointer; text-align:center;
+  transition:all .25s; position:relative; overflow:hidden;
+}
+.role-btn:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,.08); }
+.role-btn.active-bf { border-color:var(--blue); background:var(--blue-pale); box-shadow:0 0 0 3px rgba(63,143,212,.15); }
+.role-btn.active-gf { border-color:var(--pink); background:var(--pink-pale); box-shadow:0 0 0 3px rgba(255,92,158,.15); }
+.role-emoji { font-size:2rem; display:block; margin-bottom:8px; }
+.role-label { font-weight:800; font-size:.95rem; color:var(--ink); display:block; }
+.role-desc  { font-size:.75rem; color:var(--muted); margin-top:4px; }
+
+/* FORM FIELDS */
+.field { margin-bottom:18px; }
+.field-label {
+  display:block; font-size:.72rem; font-weight:800;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:6px;
+}
+.field-input, .field-textarea {
+  width:100%; padding:12px 16px;
+  border-radius:12px; border:1.5px solid #e8d8f8;
+  font-family:'Nunito',sans-serif; font-size:.95rem; color:var(--ink);
+  background:white; outline:none; transition:border-color .3s, box-shadow .3s;
+}
+.field-input:focus, .field-textarea:focus {
+  border-color:var(--pink); box-shadow:0 0 0 3px var(--pink-glow);
+}
+.field-textarea { resize:vertical; min-height:80px; line-height:1.6; }
+.fields-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+
+.btn-create {
+  width:100%; padding:17px; border:none; border-radius:16px; cursor:pointer;
+  font-family:'Nunito',sans-serif; font-size:1.05rem; font-weight:800;
+  background:linear-gradient(135deg,var(--pink),#b57bee);
+  color:white; letter-spacing:.04em;
+  box-shadow:0 8px 30px rgba(255,92,158,.32);
+  transition:transform .2s, box-shadow .2s; margin-top:6px;
+}
+.btn-create:hover { transform:translateY(-2px); box-shadow:0 12px 40px rgba(255,92,158,.42); }
+
+.thunder-credit {
+  text-align:center; margin-top:18px;
+  font-size:.75rem; color:var(--muted); letter-spacing:.04em;
+}
+.thunder-credit b { color:var(--pink); }
+
+/* ══════════════════════════════════
+   EXPIRED PAGE
+══════════════════════════════════ */
+#expired {
+  display:none; position:relative; z-index:10;
+  min-height:100vh; align-items:center; justify-content:center;
+  flex-direction:column; text-align:center; padding:40px 20px;
+}
+.expired-card {
+  background:white; border-radius:28px; padding:60px 48px;
+  box-shadow:0 20px 60px rgba(0,0,0,.10); max-width:420px; width:100%;
+}
+.expired-icon { font-size:4rem; margin-bottom:16px; display:block; animation:spin 4s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+.expired-title { font-family:'Playfair Display',serif; font-size:1.8rem; color:var(--ink); margin-bottom:12px; }
+.expired-sub { font-size:.95rem; color:var(--muted); line-height:1.7; margin-bottom:28px; }
+.btn-new { padding:14px 32px; border-radius:50px; border:none; cursor:pointer;
+  font-family:'Nunito',sans-serif; font-size:.95rem; font-weight:800;
+  background:linear-gradient(135deg,var(--pink),#b57bee); color:white;
+  box-shadow:0 6px 24px rgba(255,92,158,.3); transition:transform .2s; }
+.btn-new:hover { transform:translateY(-2px); }
+
+/* ══════════════════════════════════
+   LOVE PAGE
+══════════════════════════════════ */
+#lovepage { display:none; position:relative; z-index:10; }
+
+/* HERO */
+.lp-hero {
+  min-height:100vh; display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  text-align:center; padding:80px 24px 60px;
+  position:relative; overflow:hidden;
+}
+.lp-hero-bg {
+  position:absolute; inset:0; z-index:0;
+  transition:background 1s;
+}
+.lp-hero-bg.for-girl {
+  background:radial-gradient(ellipse 80% 60% at 50% 0%, #ffd6ec 0%, #fff0f7 45%, #fdf0ff 100%);
+}
+.lp-hero-bg.for-boy {
+  background:radial-gradient(ellipse 80% 60% at 50% 0%, #c6e3f7 0%, #eef6ff 45%, #f0f0ff 100%);
+}
+canvas#heroCanvas {
+  position:absolute; inset:0; pointer-events:none; z-index:1;
+}
+
+.lp-hero-content { position:relative; z-index:2; max-width:640px; }
+
+/* FROM badge */
+.from-badge {
+  display:inline-flex; align-items:center; gap:8px;
+  padding:8px 20px; border-radius:50px; margin-bottom:28px;
+  font-size:.8rem; font-weight:800; letter-spacing:.1em; text-transform:uppercase;
+  animation:popIn .6s .1s cubic-bezier(.34,1.56,.64,1) both;
+}
+.from-badge.girl { background:linear-gradient(135deg,#ffd6ec,#ffb3d9); color:var(--pink-deep); }
+.from-badge.boy  { background:linear-gradient(135deg,#c6e3f7,#9dd0f8); color:var(--blue-deep); }
+@keyframes popIn { from{opacity:0;transform:scale(.5)} to{opacity:1;transform:scale(1)} }
+
+/* NAMES */
+.names-row {
+  display:flex; align-items:center; justify-content:center;
+  gap:16px; margin-bottom:20px;
+  animation:popIn .7s .25s cubic-bezier(.34,1.56,.64,1) both;
+}
+.name-chip {
+  padding:14px 26px; border-radius:18px;
+  font-family:'Dancing Script',cursive; font-size:1.6rem; font-weight:700;
+  box-shadow:0 8px 28px rgba(0,0,0,.09); position:relative; overflow:hidden;
+}
+.name-chip.sender.girl { background:linear-gradient(135deg,#ffd6ec,#ffb3d9); color:var(--pink-deep); }
+.name-chip.sender.boy  { background:linear-gradient(135deg,#c6e3f7,#a8d4f5); color:var(--blue-deep); }
+.name-chip.receiver.girl { background:linear-gradient(135deg,#ffd6ec,#ffb3d9); color:var(--pink-deep); }
+.name-chip.receiver.boy  { background:linear-gradient(135deg,#c6e3f7,#a8d4f5); color:var(--blue-deep); }
+.name-chip .bday-badge {
+  position:absolute; top:6px; right:8px;
+  font-size:.55rem; font-weight:900; letter-spacing:.06em; text-transform:uppercase;
+  background:var(--gold); color:#5a3a00; padding:2px 7px; border-radius:20px;
+  animation:glow 1.2s ease-in-out infinite;
+}
+@keyframes glow { 0%,100%{box-shadow:0 0 6px rgba(249,201,70,.5)} 50%{box-shadow:0 0 18px rgba(249,201,70,.9)} }
+
+.heart-anim {
+  font-size:2.6rem;
+  animation:heartBeat 1.5s ease-in-out infinite;
+  filter:drop-shadow(0 4px 14px rgba(255,92,158,.5));
+}
+@keyframes heartBeat {
+  0%,100%{transform:scale(1)} 20%{transform:scale(1.22)} 50%{transform:scale(1)} 70%{transform:scale(1.12)}
+}
+
+.lp-headline {
+  font-family:'Playfair Display',serif; font-size:clamp(1.8rem,5vw,3rem);
+  font-weight:700; color:var(--ink); margin-bottom:10px; line-height:1.2;
+  animation:fadeUp .8s .4s both;
+}
+.lp-headline em { font-style:italic; }
+.lp-headline.pink em { color:var(--pink); }
+.lp-headline.blue em { color:var(--blue); }
+
+.lp-for-you {
+  font-family:'Dancing Script',cursive; font-size:1.2rem; color:var(--mid);
+  margin-bottom:36px; animation:fadeUp .8s .55s both;
+}
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:none} }
+
+/* DAYS COUNTER */
+.counter-wrap {
+  background:white; border-radius:24px;
+  box-shadow:0 12px 50px rgba(0,0,0,.08);
+  padding:28px 44px; display:inline-flex;
+  flex-direction:column; align-items:center; margin-bottom:32px;
+  animation:fadeUp .8s .65s both; position:relative; overflow:hidden;
+}
+.counter-wrap::after {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(135deg,rgba(255,92,158,.04),rgba(63,143,212,.04));
+}
+.counter-lbl {
+  font-size:.7rem; font-weight:800; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--muted); margin-bottom:6px;
+}
+.counter-num {
+  font-family:'Playfair Display',serif; font-size:clamp(3.5rem,9vw,5.5rem);
+  font-weight:700; line-height:1;
+  background:linear-gradient(135deg,var(--pink),#b57bee,var(--blue));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+.counter-sub { font-size:.82rem; font-weight:600; color:var(--muted); margin-top:4px; }
+.counter-since { font-size:.75rem; color:var(--muted); margin-top:8px; }
+
+/* TIME TILES */
+.time-tiles {
+  display:flex; gap:10px; flex-wrap:wrap; justify-content:center;
+  margin-bottom:32px; animation:fadeUp .8s .75s both;
+}
+.ttile {
+  background:white; border-radius:14px; padding:12px 18px; text-align:center;
+  box-shadow:0 4px 18px rgba(0,0,0,.07); min-width:70px;
+}
+.ttile-n { font-family:'Playfair Display',serif; font-size:1.5rem; font-weight:700; line-height:1; }
+.ttile-n.pink { color:var(--pink); }
+.ttile-n.blue { color:var(--blue); }
+.ttile-n.purp { color:#b57bee; }
+.ttile-n.gold { color:#d49e00; }
+.ttile-l { font-size:.62rem; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-top:2px; }
+
+/* SHARE / TIMER */
+.share-row {
+  display:flex; flex-direction:column; align-items:center; gap:10px;
+  animation:fadeUp .8s .85s both;
+}
+.btn-share-main {
+  display:inline-flex; align-items:center; gap:8px; padding:15px 34px;
+  border-radius:50px; border:none; cursor:pointer;
+  font-family:'Nunito',sans-serif; font-size:1rem; font-weight:800;
+  color:white; letter-spacing:.03em;
+  transition:transform .2s, box-shadow .2s;
+}
+.btn-share-main.pink-share {
+  background:linear-gradient(135deg,var(--pink),#b57bee);
+  box-shadow:0 6px 28px rgba(255,92,158,.35);
+}
+.btn-share-main.blue-share {
+  background:linear-gradient(135deg,var(--blue),#6b3fd4);
+  box-shadow:0 6px 28px rgba(63,143,212,.35);
+}
+.btn-share-main:hover { transform:translateY(-2px); }
+
+.timer-pill {
+  display:inline-flex; align-items:center; gap:6px;
+  background:rgba(0,0,0,.05); border-radius:50px; padding:7px 18px;
+  font-size:.78rem; font-weight:700; color:var(--mid);
+}
+.timer-dot { width:8px; height:8px; border-radius:50%; background:#26de81; animation:blink 1s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+.timer-dot.urgent { background:#ff4d4d; }
+
+.share-hint { font-size:.75rem; color:var(--muted); }
+
+/* SECTIONS */
+.lp-section { padding:64px 24px; max-width:760px; margin:0 auto; }
+.sec-head {
+  font-family:'Playfair Display',serif; font-size:1.6rem; font-style:italic;
+  font-weight:700; color:var(--ink); text-align:center; margin-bottom:30px;
+}
+.sec-head span.pink { color:var(--pink); }
+.sec-head span.blue { color:var(--blue); }
+
+/* MESSAGE CARD */
+.message-card {
+  background:white; border-radius:24px;
+  padding:40px 36px; position:relative; overflow:hidden;
+  box-shadow:0 10px 40px rgba(0,0,0,.08);
+}
+.message-card.pink-card { border-left:5px solid var(--pink); }
+.message-card.blue-card { border-left:5px solid var(--blue); }
+.message-card::before {
+  content:'\201C'; font-family:'Playfair Display',serif;
+  font-size:9rem; line-height:1;
+  position:absolute; top:-10px; left:16px;
+  color:rgba(0,0,0,.04); pointer-events:none;
+}
+.message-text {
+  font-family:'Playfair Display',serif; font-style:italic;
+  font-size:1.2rem; line-height:1.8; color:var(--ink);
+  position:relative; z-index:1; margin-bottom:20px;
+}
+.message-from {
+  font-family:'Dancing Script',cursive; font-size:1.1rem; color:var(--muted);
+  text-align:right;
+}
+
+/* BIRTHDAY SECTION */
+.bday-section {
+  background:white; border-radius:24px;
+  padding:36px; text-align:center;
+  box-shadow:0 10px 40px rgba(0,0,0,.08);
+  display:none;
+}
+.bday-section.show { display:block; }
+.bday-title {
+  font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:700;
+  color:var(--ink); margin-bottom:8px;
+}
+.bday-balloons { font-size:2.2rem; letter-spacing:4px; margin-bottom:12px; animation:balloonBounce 1.5s ease-in-out infinite; }
+@keyframes balloonBounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+.bday-text { font-size:.95rem; color:var(--mid); line-height:1.7; }
+
+/* TIMELINE */
+.timeline { list-style:none; }
+.tl-item {
+  display:flex; gap:18px; padding:16px 0;
+  border-bottom:1px solid rgba(0,0,0,.05);
+}
+.tl-item:last-child { border-bottom:none; }
+.tl-icon { font-size:1.3rem; flex-shrink:0; margin-top:2px; }
+.tl-title { font-weight:700; color:var(--ink); font-size:.92rem; }
+.tl-date  { font-size:.78rem; color:var(--muted); margin-top:3px; }
+
+/* FOOTER */
+.lp-footer {
+  padding:44px 24px; text-align:center;
+  background:linear-gradient(135deg,var(--pink-pale),var(--blue-pale));
+}
+.footer-brand {
+  font-family:'Dancing Script',cursive; font-size:1.5rem; color:var(--mid); margin-bottom:6px;
+}
+.footer-brand b { color:var(--pink); }
+.footer-credit {
+  font-size:.82rem; color:var(--muted); margin-top:4px; line-height:1.6;
+}
+.footer-credit a { color:var(--pink); font-weight:700; text-decoration:none; }
+.footer-credit a:hover { text-decoration:underline; }
+.footer-expire { font-size:.72rem; color:var(--muted); margin-top:8px; }
+
+/* TOAST */
+.toast {
+  position:fixed; bottom:28px; left:50%; transform:translateX(-50%) translateY(80px);
+  background:var(--ink); color:white; padding:12px 28px; border-radius:50px;
+  font-size:.88rem; font-weight:700; z-index:9999;
+  transition:transform .4s cubic-bezier(.34,1.56,.64,1), opacity .3s;
+  opacity:0; pointer-events:none; white-space:nowrap;
+}
+.toast.show { transform:translateX(-50%) translateY(0); opacity:1; }
+
+/* BALLOONS + CONFETTI */
+#burst { position:fixed; inset:0; pointer-events:none; z-index:8000; overflow:hidden; }
+.bln {
+  position:absolute; bottom:-80px;
+  animation:bRise var(--d,6s) ease-in var(--dl,0s) forwards;
+  font-size:var(--sz,2.8rem);
+  filter:drop-shadow(0 4px 10px rgba(0,0,0,.15));
+}
+@keyframes bRise {
+  0%   { bottom:-80px; opacity:1; transform:translateX(0) rotate(0deg); }
+  25%  { transform:translateX(-18px) rotate(-6deg); }
+  50%  { transform:translateX(14px) rotate(5deg); }
+  75%  { transform:translateX(-8px) rotate(-3deg); opacity:1; }
+  100% { bottom:110vh; opacity:0; }
+}
+.cnf {
+  position:absolute; top:-10px; border-radius:3px;
+  animation:cFall var(--d,4s) ease-in var(--dl,0s) forwards;
+}
+@keyframes cFall {
+  0%   { transform:translateY(0) rotate(0) translateX(0); opacity:1; }
+  100% { transform:translateY(100vh) rotate(720deg) translateX(var(--sx,50px)); opacity:0; }
+}
+.bday-popup {
+  position:absolute; top:16%; left:50%; transform:translateX(-50%) scale(0);
+  font-family:'Dancing Script',cursive; font-size:clamp(1.8rem,5vw,3.2rem); font-weight:700;
+  background:linear-gradient(135deg,var(--pink),#b57bee,var(--blue));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  text-align:center; white-space:nowrap; z-index:2;
+  animation:bdPop .7s .1s cubic-bezier(.34,1.56,.64,1) forwards;
+}
+@keyframes bdPop { to{transform:translateX(-50%) scale(1)} }
+
+/* BACK BTN */
+.btn-back {
+  display:inline-flex; align-items:center; gap:6px;
+  padding:10px 22px; border-radius:50px;
+  background:rgba(0,0,0,.06); border:none; cursor:pointer;
+  font-family:'Nunito',sans-serif; font-size:.85rem; font-weight:700;
+  color:var(--mid); transition:background .2s;
+  margin-top:10px;
+}
+.btn-back:hover { background:rgba(0,0,0,.1); }
+
+/* RESPONSIVE */
+@media (max-width:580px) {
+  .setup-wrap { padding:32px 20px; }
+  .role-pick, .fields-row { grid-template-columns:1fr; }
+  .counter-wrap { padding:22px 28px; }
+  .message-card { padding:28px 22px; }
+}
+</style>
+</head>
+<body>
+
+<div id="petals"></div>
+<div id="burst"></div>
+<div class="toast" id="toast"></div>
+
+<!-- ══════════════════════════════
+     SETUP
+══════════════════════════════ -->
+<div id="setup">
+  <div class="setup-wrap">
+    <p class="brand-logo">💕 <b>TwoHearts</b> Apart</p>
+    <h1 class="setup-title">Create a Love Page</h1>
+    <p class="setup-sub">Make a beautiful surprise page for your person — share a link that lasts 24 hours 💌</p>
+
+    <!-- WHO IS SENDING -->
+    <p class="field-label" style="margin-bottom:10px">I am a…</p>
+    <div class="role-pick">
+      <button class="role-btn" id="roleGF" onclick="setRole('gf')">
+        <span class="role-emoji">💅</span>
+        <span class="role-label">Girlfriend</span>
+        <span class="role-desc">Creating for my boyfriend 💙</span>
+      </button>
+      <button class="role-btn active-bf" id="roleBF" onclick="setRole('bf')">
+        <span class="role-emoji">💪</span>
+        <span class="role-label">Boyfriend</span>
+        <span class="role-desc">Creating for my girlfriend 💕</span>
+      </button>
+    </div>
+
+    <div class="fields-row">
+      <div class="field">
+        <label class="field-label">💙 Your Name</label>
+        <input class="field-input" id="senderName" type="text" placeholder="Your name…" maxlength="22">
+      </div>
+      <div class="field">
+        <label class="field-label" id="receiverLabel">💕 Her Name</label>
+        <input class="field-input" id="receiverName" type="text" placeholder="Her name…" maxlength="22">
+      </div>
+    </div>
+
+    <div class="fields-row">
+      <div class="field">
+        <label class="field-label" id="receiverDobLabel">🎂 Her Birthday</label>
+        <input class="field-input" id="receiverDob" type="date">
+      </div>
+      <div class="field">
+        <label class="field-label">💞 Together Since</label>
+        <input class="field-input" id="anniversary" type="date">
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">💌 Your Message to Her</label>
+      <textarea class="field-textarea" id="message" id="message" placeholder="Write something from your heart… she'll love it 🥹" maxlength="320"></textarea>
+    </div>
+
+    <button class="btn-create" onclick="buildPage()">
+      💕 Create &amp; Share — 24 hrs Only →
+    </button>
+
+    <p class="thunder-credit">Made with love by <b>@thundertechnologyofficial</b></p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     EXPIRED
+══════════════════════════════ -->
+<div id="expired" style="display:none">
+  <div class="expired-card">
+    <span class="expired-icon">⏳</span>
+    <h2 class="expired-title">This link has expired</h2>
+    <p class="expired-sub">Love pages on TwoHearts Apart are only available for <strong>24 hours</strong> after creation — it makes them extra special. Ask your person to create a new one for you 💌</p>
+    <button class="btn-new" onclick="goSetup()">Create My Own Love Page</button>
+    <p class="thunder-credit" style="margin-top:18px">Made with love by <b>@thundertechnologyofficial</b></p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     LOVE PAGE
+══════════════════════════════ -->
+<div id="lovepage">
+
+  <div class="lp-hero">
+    <div class="lp-hero-bg" id="heroBg"></div>
+    <canvas id="heroCanvas"></canvas>
+
+    <div class="lp-hero-content">
+      <!-- FROM badge -->
+      <div class="from-badge" id="fromBadge"></div>
+
+      <!-- Names -->
+      <div class="names-row">
+        <div class="name-chip sender" id="senderChip"></div>
+        <div class="heart-anim" id="heartAnim">💗</div>
+        <div class="name-chip receiver" id="receiverChip"></div>
+      </div>
+
+      <h1 class="lp-headline" id="lpHeadline">For You, <em id="hlName">—</em></h1>
+      <p class="lp-for-you" id="forYouLine">a little page filled with love ✨</p>
+
+      <!-- Days Counter -->
+      <div class="counter-wrap">
+        <div class="counter-lbl">💞 Days of Us</div>
+        <div class="counter-num" id="daysNum">0</div>
+        <div class="counter-sub">beautiful days together</div>
+        <div class="counter-since" id="daySince">—</div>
+      </div>
+
+      <!-- Tiles -->
+      <div class="time-tiles" id="timeTiles"></div>
+
+      <!-- Share + Timer -->
+      <div class="share-row">
+        <button class="btn-share-main" id="shareBtn" onclick="doShare()"></button>
+        <div class="timer-pill">
+          <span class="timer-dot" id="timerDot"></span>
+          <span id="timerText">Link active</span>
+        </div>
+        <p class="share-hint">This page disappears in 24 hours — share it now 💌</p>
+        <button class="btn-back" onclick="goSetup()">✏️ Make a new page</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MESSAGE -->
+  <div class="lp-section" id="msgSection" style="display:none">
+    <h2 class="sec-head">A <span id="msgHeadSpan">Letter</span> For You 💌</h2>
+    <div class="message-card" id="msgCard">
+      <p class="message-text" id="msgText"></p>
+      <p class="message-from" id="msgFrom">— with all my love ❤️</p>
+    </div>
+  </div>
+
+  <!-- BIRTHDAY -->
+  <div class="lp-section" style="padding-top:0">
+    <div class="bday-section" id="bdaySection">
+      <div class="bday-balloons">🎈🎉🎊🎂🎈</div>
+      <h2 class="bday-title" id="bdayTitle">Happy Birthday!</h2>
+      <p class="bday-text" id="bdayText"></p>
+    </div>
+  </div>
+
+  <!-- TIMELINE -->
+  <div class="lp-section" style="padding-top:10px">
+    <h2 class="sec-head">Our <span id="tlSpan" class="pink">Story</span> 📅</h2>
+    <ul class="timeline" id="timeline"></ul>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="lp-footer">
+    <div class="footer-brand">💕 <b>TwoHearts</b> Apart</div>
+    <p class="footer-credit">
+      Made with love by <a href="https://instagram.com/thundertechnologyofficial" target="_blank">@thundertechnologyofficial</a>
+    </p>
+    <p class="footer-expire" id="footerExpire"></p>
+  </div>
+
+</div>
+
+<script>
+/* ══════════════════════════════
+   PETALS
+══════════════════════════════ */
+(function(){
+  const el = document.getElementById('petals');
+  ['💕','💗','💖','✨','💫','🌸','💙','🌺','⭐'].forEach((sym,i) => {
+    for(let j=0;j<3;j++){
+      const s = document.createElement('span');
+      s.className='petal';
+      s.textContent=sym;
+      s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;
+        --s:${14+Math.random()*20}px;--d:${9+Math.random()*11}s;--dl:-${Math.random()*12}s`;
+      el.appendChild(s);
+    }
+  });
+})();
+
+/* ══════════════════════════════
+   STATE
+══════════════════════════════ */
+let senderRole = 'bf'; // bf = boyfriend sending to girlfriend
+let timerInterval = null;
+let sharedUrl = '';
+
+function setRole(r){
+  senderRole = r;
+  document.getElementById('roleBF').className = 'role-btn' + (r==='bf'?' active-bf':'');
+  document.getElementById('roleGF').className = 'role-btn' + (r==='gf'?' active-gf':'');
+  const rLbl = document.getElementById('receiverLabel');
+  const rDobLbl = document.getElementById('receiverDobLabel');
+  const msgLbl = document.querySelector('label[for="message"]') || document.querySelector('.field-label:last-of-type');
+  if(r==='bf'){
+    rLbl.textContent = '💕 Her Name';
+    rDobLbl.textContent = '🎂 Her Birthday';
+    document.getElementById('receiverName').placeholder='Her name…';
+    document.getElementById('message').placeholder="Write something from your heart… she'll love it 🥹";
+  } else {
+    rLbl.textContent = '💙 His Name';
+    rDobLbl.textContent = '🎂 His Birthday';
+    document.getElementById('receiverName').placeholder='His name…';
+    document.getElementById('message').placeholder="Write something from your heart… he'll love it 🥹";
+  }
+}
+
+/* ══════════════════════════════
+   HELPERS
+══════════════════════════════ */
+function parseDate(s){ return s ? new Date(s+'T00:00:00') : null; }
+function todayMidnight(){ const d=new Date(); d.setHours(0,0,0,0); return d; }
+function daysDiff(a,b){ return Math.max(0,Math.floor((b-a)/86400000)); }
+function formatDate(d){ return d ? d.toLocaleDateString('en-US',{day:'numeric',month:'long',year:'numeric'}) : '—'; }
+function calcAge(dob){
+  if(!dob)return null;
+  const t=todayMidnight(), d=parseDate(dob);
+  let age=t.getFullYear()-d.getFullYear();
+  const m=t.getMonth()-d.getMonth();
+  if(m<0||(m===0&&t.getDate()<d.getDate()))age--;
+  return age;
+}
+function isBdayToday(dob){
+  if(!dob)return false;
+  const t=todayMidnight(),d=parseDate(dob);
+  return d.getMonth()===t.getMonth()&&d.getDate()===t.getDate();
+}
+function nextBirthday(dob){
+  if(!dob)return null;
+  const t=todayMidnight(),d=parseDate(dob);
+  let next=new Date(t.getFullYear(),d.getMonth(),d.getDate());
+  if(next<t) next=new Date(t.getFullYear()+1,d.getMonth(),d.getDate());
+  return daysDiff(t,next);
+}
+function enc(data){ try{ return btoa(encodeURIComponent(JSON.stringify(data))); }catch{return '';} }
+function dec(s){ try{ return JSON.parse(decodeURIComponent(atob(s))); }catch{return null;} }
+
+/* ══════════════════════════════
+   CANVAS HEARTS
+══════════════════════════════ */
+let particles=[];
+function initCanvas(color){
+  const cv=document.getElementById('heroCanvas');
+  cv.width=window.innerWidth; cv.height=window.innerHeight;
+  const ctx=cv.getContext('2d');
+  const syms = color==='pink'
+    ? ['💕','🌸','✨','💫','🎀','💖','⭐']
+    : ['💙','✨','💫','⭐','🌊','💎','🌟'];
+  particles=[];
+  for(let i=0;i<24;i++){
+    particles.push({
+      x:Math.random()*cv.width, y:Math.random()*cv.height,
+      vx:(Math.random()-.5)*.35, vy:-Math.random()*.35-.1,
+      size:11+Math.random()*14, alpha:.12+Math.random()*.2,
+      sym:syms[Math.floor(Math.random()*syms.length)],
+      phase:Math.random()*Math.PI*2
+    });
+  }
+  let t=0;
+  function draw(){
+    ctx.clearRect(0,0,cv.width,cv.height); t+=.01;
+    particles.forEach(p=>{
+      p.x+=p.vx+Math.sin(t+p.phase)*.25; p.y+=p.vy;
+      if(p.y<-30){p.y=cv.height+30;p.x=Math.random()*cv.width;}
+      ctx.globalAlpha=p.alpha; ctx.font=`${p.size}px serif`;
+      ctx.fillText(p.sym,p.x,p.y);
+    });
+    ctx.globalAlpha=1; requestAnimationFrame(draw);
+  }
+  draw();
+}
+window.addEventListener('resize',()=>{
+  const cv=document.getElementById('heroCanvas');
+  if(cv){cv.width=window.innerWidth;cv.height=window.innerHeight;}
+});
+
+/* ══════════════════════════════
+   BIRTHDAY BURST
+══════════════════════════════ */
+function launchBurst(name){
+  const el=document.getElementById('burst');
+  el.innerHTML='';
+  const bl=['🎈','🎉','🎊','🎀','💖','🎂','✨','🌟','💕'];
+  const cc=['#ff5c9e','#3f8fd4','#f9c946','#b57bee','#ff9f43','#26de81','#ff6b6b'];
+  for(let i=0;i<20;i++){
+    const b=document.createElement('div'); b.className='bln';
+    b.textContent=bl[Math.floor(Math.random()*bl.length)];
+    b.style.cssText=`left:${5+Math.random()*90}%;--d:${5+Math.random()*5}s;--dl:${Math.random()*2.5}s;--sz:${2+Math.random()*1.8}rem`;
+    el.appendChild(b);
+  }
+  for(let i=0;i<70;i++){
+    const c=document.createElement('div'); c.className='cnf';
+    c.style.cssText=`left:${Math.random()*100}%;
+      background:${cc[Math.floor(Math.random()*cc.length)]};
+      width:${5+Math.random()*9}px;height:${5+Math.random()*9}px;
+      --d:${3+Math.random()*3}s;--dl:${Math.random()*1.5}s;
+      --sx:${(Math.random()-.5)*200}px;
+      border-radius:${Math.random()>.5?'50%':'2px'}`;
+    el.appendChild(c);
+  }
+  const pop=document.createElement('div'); pop.className='bday-popup';
+  pop.textContent=`🎂 Happy Birthday, ${name}! 🎂`;
+  el.appendChild(pop);
+  setTimeout(()=>{el.innerHTML='';},10000);
+}
+
+/* ══════════════════════════════
+   BUILD PAGE
+══════════════════════════════ */
+function buildPage(data){
+  if(!data){
+    const sName = (document.getElementById('senderName').value.trim()||'Your Person');
+    const rName = (document.getElementById('receiverName').value.trim()||(senderRole==='bf'?'Her':'Him'));
+    data = {
+      role:    senderRole,
+      sender:  sName,
+      receiver:rName,
+      dob:     document.getElementById('receiverDob').value,
+      ann:     document.getElementById('anniversary').value,
+      msg:     document.getElementById('message').value.trim(),
+      created: Date.now()
+    };
+  }
+
+  /* Theming: bf→girl page (pink), gf→boy page (blue) */
+  const forGirl = (data.role==='bf');
+  const themeColor = forGirl ? 'pink' : 'blue';
+  const accentVar  = forGirl ? 'var(--pink)' : 'var(--blue)';
+  const emoji      = forGirl ? '💕' : '💙';
+
+  /* Hero bg */
+  const heroBg=document.getElementById('heroBg');
+  heroBg.className='lp-hero-bg '+(forGirl?'for-girl':'for-boy');
+
+  /* From badge */
+  const fb=document.getElementById('fromBadge');
+  fb.className='from-badge '+(forGirl?'girl':'boy');
+  fb.innerHTML= forGirl
+    ? `💙 From your boyfriend ${data.sender}`
+    : `💕 From your girlfriend ${data.sender}`;
+
+  /* Chips */
+  const sc=document.getElementById('senderChip');
+  sc.className='name-chip sender '+(forGirl?'boy':'girl');
+  sc.textContent=data.sender;
+
+  const rc=document.getElementById('receiverChip');
+  rc.className='name-chip receiver '+(forGirl?'girl':'boy');
+  rc.innerHTML=data.receiver + (isBdayToday(data.dob)?'<span class="bday-badge">🎂 Birthday!</span>':'');
+
+  document.getElementById('heartAnim').textContent=forGirl?'💗':'💙';
+
+  /* Headline */
+  const hl=document.getElementById('lpHeadline');
+  hl.className='lp-headline '+(forGirl?'pink':'blue');
+  hl.innerHTML=`For You, <em id="hlName">${data.receiver}</em>`;
+  document.getElementById('forYouLine').textContent=
+    forGirl ? `a little page filled with all my love for you 🥰`
+            : `a little page to show how much you mean to me 💙`;
+
+  /* Days */
+  const ann=parseDate(data.ann), t=todayMidnight();
+  let days=ann?daysDiff(ann,t):0;
+  document.getElementById('daysNum').textContent=days.toLocaleString();
+  document.getElementById('daySince').textContent=ann?`Since ${formatDate(ann)}`:'Set your anniversary date ✨';
+
+  /* Tiles */
+  const weeks=Math.floor(days/7), months=Math.floor(days/30.44), hours=days*24;
+  document.getElementById('timeTiles').innerHTML=[
+    {n:weeks,  l:'Weeks', c:themeColor==='pink'?'pink':'blue'},
+    {n:months, l:'Months',c:'purp'},
+    {n:days,   l:'Days',  c:themeColor==='pink'?'blue':'pink'},
+    {n:hours.toLocaleString(),l:'Hours',c:'gold'}
+  ].map(t=>`<div class="ttile"><div class="ttile-n ${t.c}">${t.n}</div><div class="ttile-l">${t.l}</div></div>`).join('');
+
+  /* Share btn */
+  const sb=document.getElementById('shareBtn');
+  sb.className='btn-share-main '+(forGirl?'pink-share':'blue-share');
+  sb.innerHTML=`🔗 Send This Page to ${data.receiver}`;
+
+  /* Message */
+  if(data.msg){
+    document.getElementById('msgSection').style.display='';
+    document.getElementById('msgHeadSpan').innerHTML=`<span class="${themeColor}">Letter</span>`;
+    document.getElementById('msgCard').className='message-card '+(forGirl?'pink-card':'blue-card');
+    document.getElementById('msgText').textContent=data.msg;
+    document.getElementById('msgFrom').textContent=`— with all my love, ${data.sender} ${emoji}`;
+  } else {
+    document.getElementById('msgSection').style.display='none';
+  }
+
+  /* Birthday section */
+  const isBday=isBdayToday(data.dob);
+  const nb=nextBirthday(data.dob);
+  const age=calcAge(data.dob);
+  const bdSec=document.getElementById('bdaySection');
+  if(isBday){
+    bdSec.className='bday-section show';
+    document.getElementById('bdayTitle').textContent=`Happy Birthday, ${data.receiver}! 🎂`;
+    document.getElementById('bdayText').textContent=
+      `Today is your special day! ${age?`You're turning ${age} — `:''}`+
+      `${data.sender} made this page just for you on your birthday 🎈 You are so loved!`;
+    setTimeout(()=>launchBurst(data.receiver),800);
+  } else if(nb!==null){
+    bdSec.className='bday-section show';
+    document.getElementById('bdayTitle').textContent=
+      nb===0?`Happy Birthday, ${data.receiver}!`:`${data.receiver}'s Birthday is Coming 🎂`;
+    document.getElementById('bdayText').textContent=
+      nb===0
+        ? `🎉 Today is the day! Happy Birthday, ${data.receiver}!`
+        : `Only ${nb} day${nb===1?'':'s'} until ${data.receiver}'s birthday! ${data.sender} can't wait to celebrate with you 🎈`;
+    document.getElementById('bdaySection').querySelector('.bday-balloons').textContent =
+      nb===0 ? '🎈🎉🎊🎂🎈' : `🎂 ${nb} days! 🎂`;
+  } else {
+    bdSec.className='bday-section';
+  }
+
+  /* Timeline */
+  const milestones=[];
+  if(ann){
+    milestones.push({i:'💕',t:'We Became Official',d:formatDate(ann)});
+    if(days>=100)  milestones.push({i:'🎉',t:'100 Days Together',d:formatDate(new Date(ann.getTime()+100*86400000))});
+    if(days>=365)  milestones.push({i:'🥂',t:'First Anniversary',d:formatDate(new Date(ann.getTime()+365*86400000))});
+    if(days>=730)  milestones.push({i:'💍',t:'Two Years of Us',d:formatDate(new Date(ann.getTime()+730*86400000))});
+    if(days>=1000) milestones.push({i:'🌟',t:'1000 Days of Love',d:formatDate(new Date(ann.getTime()+1000*86400000))});
+  }
+  if(data.dob) milestones.push({i:'🎂',t:`${data.receiver}'s Birthday`,d:formatDate(parseDate(data.dob))});
+  document.getElementById('tlSpan').className=themeColor;
+  document.getElementById('timeline').innerHTML=milestones.length
+    ? milestones.map(m=>`<li class="tl-item"><span class="tl-icon">${m.i}</span><div><div class="tl-title">${m.t}</div><div class="tl-date">${m.d}</div></div></li>`).join('')
+    : `<li class="tl-item"><span class="tl-icon">🌱</span><div><div class="tl-title">Your story is beginning…</div><div class="tl-date">Add your anniversary date to see milestones</div></div></li>`;
+
+  /* 24h timer */
+  const expiresAt = data.created + 24*60*60*1000;
+  const footerExpire = document.getElementById('footerExpire');
+  startTimer(expiresAt, footerExpire);
+
+  /* Build share URL */
+  const encoded = enc(data);
+  sharedUrl = window.location.href.split('#')[0] + '#' + encoded;
+
+  /* Show */
+  document.getElementById('setup').style.display='none';
+  document.getElementById('lovepage').style.display='block';
+  document.getElementById('expired').style.display='none';
+  window.scrollTo(0,0);
+  initCanvas(themeColor);
+  window._storyData=data;
+}
+
+/* ══════════════════════════════
+   24H TIMER
+══════════════════════════════ */
+function startTimer(expiresAt, labelEl){
+  if(timerInterval) clearInterval(timerInterval);
+  function tick(){
+    const remaining = expiresAt - Date.now();
+    const dot=document.getElementById('timerDot');
+    const timerText=document.getElementById('timerText');
+    if(remaining<=0){
+      timerText.textContent='Link expired';
+      if(dot){dot.className='timer-dot urgent';}
+      if(labelEl) labelEl.textContent='This link has expired.';
+      clearInterval(timerInterval);
+      return;
+    }
+    const h=Math.floor(remaining/3600000);
+    const m=Math.floor((remaining%3600000)/60000);
+    const s=Math.floor((remaining%60000)/1000);
+    const txt=`Link expires in ${h}h ${m}m ${s}s`;
+    timerText.textContent=txt;
+    if(labelEl) labelEl.textContent=`⏳ ${txt}`;
+    if(dot) dot.className='timer-dot'+(h<2?' urgent':'');
+  }
+  tick(); timerInterval=setInterval(tick,1000);
+}
+
+/* ══════════════════════════════
+   SHARE
+══════════════════════════════ */
+function doShare(){
+  if(!sharedUrl && window._storyData){
+    sharedUrl = window.location.href.split('#')[0]+'#'+enc(window._storyData);
+  }
+  navigator.clipboard.writeText(sharedUrl).then(()=>{
+    showToast('🔗 Link copied! Send it to your person 💌');
+  }).catch(()=>{ prompt('Copy this link:',sharedUrl); });
+}
+function showToast(msg){
+  const t=document.getElementById('toast'); t.textContent=msg;
+  t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3200);
+}
+function goSetup(){
+  document.getElementById('lovepage').style.display='none';
+  document.getElementById('expired').style.display='none';
+  document.getElementById('setup').style.display='';
+  if(timerInterval) clearInterval(timerInterval);
+  window.location.hash='';
+  history.replaceState(null,'',window.location.pathname);
+}
+
+/* ══════════════════════════════
+   LOAD FROM HASH (shared link)
+══════════════════════════════ */
+(function(){
+  const hash=window.location.hash.slice(1);
+  if(!hash) return;
+  const data=dec(hash);
+  if(!data||!data.sender) return;
+  // 24h check
+  const expiresAt = (data.created||0) + 24*60*60*1000;
+  if(Date.now() > expiresAt){
+    document.getElementById('setup').style.display='none';
+    document.getElementById('expired').style.display='flex';
+    return;
+  }
+  buildPage(data);
+})();
+</script>
+</body>
+</html>
