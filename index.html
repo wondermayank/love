@@ -1,0 +1,752 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>LoveVerse — A World of Love</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:wght@300;400;600&family=Dancing+Script:wght@700&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --rose: #e8436a;
+    --crimson: #c0183c;
+    --blush: #ffd6df;
+    --deep: #1a0510;
+    --wine: #5c0a2e;
+    --gold: #f5c36b;
+    --petal: #fff0f3;
+    --text: #2d0a1a;
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--deep);
+    color: var(--petal);
+    font-family: 'Cormorant Garamond', serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    position: fixed;
+    width: 20px; height: 20px;
+    background: var(--rose);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s, width 0.2s, height 0.2s, background 0.2s;
+    mix-blend-mode: screen;
+  }
+  .cursor-trail {
+    position: fixed;
+    width: 8px; height: 8px;
+    background: var(--gold);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.3s ease;
+    mix-blend-mode: screen;
+    opacity: 0.6;
+  }
+
+  /* Floating hearts background */
+  .hearts-bg {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 0;
+  }
+  .heart-particle {
+    position: absolute;
+    bottom: -60px;
+    font-size: 1.2rem;
+    opacity: 0;
+    animation: floatUp linear infinite;
+  }
+  @keyframes floatUp {
+    0% { transform: translateY(0) rotate(0deg) scale(0.8); opacity: 0; }
+    10% { opacity: 0.4; }
+    90% { opacity: 0.15; }
+    100% { transform: translateY(-110vh) rotate(720deg) scale(1.2); opacity: 0; }
+  }
+
+  /* ============ HEADER ============ */
+  header {
+    position: relative;
+    z-index: 100;
+    padding: 0 4vw;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(180deg, rgba(26,5,16,0.98) 0%, rgba(26,5,16,0.7) 100%);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(232,67,106,0.25);
+    position: sticky;
+    top: 0;
+  }
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--rose), var(--gold), var(--rose), transparent);
+    animation: shimmer 3s linear infinite;
+  }
+  @keyframes shimmer {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+  }
+
+  .logo {
+    font-family: 'Dancing Script', cursive;
+    font-size: 2rem;
+    color: var(--rose);
+    text-shadow: 0 0 20px rgba(232,67,106,0.5);
+    letter-spacing: 1px;
+    animation: pulseLogo 3s ease-in-out infinite;
+  }
+  @keyframes pulseLogo {
+    0%, 100% { text-shadow: 0 0 20px rgba(232,67,106,0.5); }
+    50% { text-shadow: 0 0 40px rgba(232,67,106,0.9), 0 0 60px rgba(245,195,107,0.3); }
+  }
+
+  nav { display: flex; gap: 2rem; align-items: center; }
+  nav a {
+    color: rgba(255,240,243,0.7);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: color 0.3s, text-shadow 0.3s;
+    font-family: 'Cormorant Garamond', serif;
+  }
+  nav a:hover { color: var(--gold); text-shadow: 0 0 12px rgba(245,195,107,0.5); }
+
+  .nav-heart {
+    color: var(--rose);
+    font-size: 1.2rem;
+    animation: heartbeat 1.4s ease-in-out infinite;
+  }
+  @keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    14% { transform: scale(1.3); }
+    28% { transform: scale(1); }
+    42% { transform: scale(1.2); }
+    56% { transform: scale(1); }
+  }
+
+  /* ============ HERO ============ */
+  .hero {
+    position: relative;
+    z-index: 10;
+    min-height: 55vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 6rem 2rem 4rem;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 40%, rgba(92,10,46,0.6) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 20% 80%, rgba(232,67,106,0.15) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 40% at 80% 20%, rgba(245,195,107,0.1) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .hero-tag {
+    font-size: 0.75rem;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeSlideUp 0.8s ease 0.2s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3rem, 8vw, 7rem);
+    line-height: 1.05;
+    color: var(--petal);
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeSlideUp 0.9s ease 0.4s forwards;
+  }
+  .hero-title em {
+    color: var(--rose);
+    font-style: italic;
+    text-shadow: 0 0 30px rgba(232,67,106,0.4);
+  }
+
+  .hero-sub {
+    font-size: 1.2rem;
+    font-weight: 300;
+    color: rgba(255,240,243,0.65);
+    max-width: 520px;
+    line-height: 1.8;
+    margin-bottom: 2.5rem;
+    opacity: 0;
+    animation: fadeSlideUp 0.9s ease 0.6s forwards;
+  }
+
+  .hero-divider {
+    width: 80px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--rose), var(--gold), var(--rose), transparent);
+    margin: 0 auto 2rem;
+    opacity: 0;
+    animation: fadeSlideUp 0.9s ease 0.8s forwards;
+  }
+
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ============ GRID ============ */
+  .section-label {
+    text-align: center;
+    font-size: 0.72rem;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.8rem;
+    position: relative;
+    z-index: 10;
+  }
+  .section-title {
+    text-align: center;
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 3.5vw, 3rem);
+    color: var(--petal);
+    margin-bottom: 3.5rem;
+    position: relative;
+    z-index: 10;
+  }
+
+  .grid-section {
+    position: relative;
+    z-index: 10;
+    padding: 2rem 5vw 6rem;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.8rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .card {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    background: linear-gradient(135deg, rgba(92,10,46,0.7) 0%, rgba(26,5,16,0.9) 100%);
+    border: 1px solid rgba(232,67,106,0.2);
+    cursor: none;
+    transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.4s, border-color 0.4s;
+    opacity: 0;
+    animation: cardReveal 0.7s ease forwards;
+    text-decoration: none;
+    display: block;
+  }
+  .card:nth-child(1) { animation-delay: 0.1s; }
+  .card:nth-child(2) { animation-delay: 0.2s; }
+  .card:nth-child(3) { animation-delay: 0.3s; }
+  .card:nth-child(4) { animation-delay: 0.4s; }
+  .card:nth-child(5) { animation-delay: 0.5s; }
+  .card:nth-child(6) { animation-delay: 0.6s; }
+
+  @keyframes cardReveal {
+    from { opacity: 0; transform: translateY(40px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .card:hover {
+    transform: translateY(-10px) scale(1.02);
+    border-color: rgba(232,67,106,0.6);
+    box-shadow:
+      0 20px 60px rgba(232,67,106,0.25),
+      0 0 0 1px rgba(232,67,106,0.1),
+      inset 0 1px 0 rgba(255,255,255,0.08);
+  }
+
+  .card-glow {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.4s;
+    pointer-events: none;
+    border-radius: 16px;
+  }
+  .card:hover .card-glow { opacity: 1; }
+
+  .card-visual {
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card-visual::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    transition: transform 0.5s ease;
+  }
+  .card:hover .card-visual::before { transform: scale(1.1); }
+
+  /* Card-specific gradients */
+  .card-1 .card-visual { background: linear-gradient(135deg, #2d0020, #7a0038); }
+  .card-1 .card-glow { background: radial-gradient(ellipse at center, rgba(232,67,106,0.2) 0%, transparent 70%); }
+  .card-2 .card-visual { background: linear-gradient(135deg, #1a001a, #4d0055); }
+  .card-2 .card-glow { background: radial-gradient(ellipse at center, rgba(160,60,200,0.2) 0%, transparent 70%); }
+  .card-3 .card-visual { background: linear-gradient(135deg, #001a20, #003d4d); }
+  .card-3 .card-glow { background: radial-gradient(ellipse at center, rgba(60,160,200,0.2) 0%, transparent 70%); }
+  .card-4 .card-visual { background: linear-gradient(135deg, #1a0a00, #4d2000); }
+  .card-4 .card-glow { background: radial-gradient(ellipse at center, rgba(245,195,107,0.2) 0%, transparent 70%); }
+  .card-5 .card-visual { background: linear-gradient(135deg, #0a1a00, #1a4d00); }
+  .card-5 .card-glow { background: radial-gradient(ellipse at center, rgba(100,200,80,0.2) 0%, transparent 70%); }
+  .card-6 .card-visual { background: linear-gradient(135deg, #1a0015, #5a004f); }
+  .card-6 .card-glow { background: radial-gradient(ellipse at center, rgba(255,100,180,0.2) 0%, transparent 70%); }
+
+  .card-icon {
+    position: relative;
+    z-index: 1;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    filter: drop-shadow(0 0 16px rgba(232,67,106,0.4));
+  }
+  .card:hover .card-icon { transform: scale(1.2) rotate(-5deg); }
+
+  .card-body { padding: 1.6rem 1.8rem 2rem; }
+
+  .card-badge {
+    display: inline-block;
+    font-size: 0.65rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.6rem;
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+  }
+
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.45rem;
+    color: var(--petal);
+    margin-bottom: 0.7rem;
+    line-height: 1.3;
+    transition: color 0.3s;
+  }
+  .card:hover .card-title { color: #fff; }
+
+  .card-desc {
+    font-size: 0.95rem;
+    color: rgba(255,240,243,0.55);
+    line-height: 1.7;
+    font-weight: 300;
+    margin-bottom: 1.2rem;
+  }
+
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .card-link {
+    font-size: 0.78rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--rose);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: gap 0.3s, color 0.3s;
+  }
+  .card:hover .card-link { gap: 0.7rem; color: var(--gold); }
+
+  .card-stat {
+    font-size: 0.8rem;
+    color: rgba(255,240,243,0.35);
+    font-style: italic;
+  }
+
+  .card-ribbon {
+    position: absolute;
+    top: 1rem;
+    right: -0.5rem;
+    background: var(--rose);
+    color: white;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 0.25rem 0.8rem 0.25rem 0.6rem;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 6% 50%);
+    box-shadow: -2px 2px 8px rgba(0,0,0,0.3);
+  }
+
+  /* Sparkle on card hover */
+  .sparkle {
+    position: absolute;
+    width: 6px; height: 6px;
+    background: var(--gold);
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0s;
+  }
+  .card:hover .sparkle { animation: sparkleAnim 0.6s ease forwards; }
+  @keyframes sparkleAnim {
+    0% { opacity: 1; transform: scale(0); }
+    50% { opacity: 0.8; transform: scale(1); }
+    100% { opacity: 0; transform: scale(1.5); }
+  }
+
+  /* ============ FOOTER ============ */
+  footer {
+    position: relative;
+    z-index: 10;
+    background: linear-gradient(180deg, rgba(26,5,16,0.6) 0%, rgba(10,0,5,1) 100%);
+    border-top: 1px solid rgba(232,67,106,0.2);
+    padding: 3.5rem 5vw 2rem;
+    text-align: center;
+  }
+
+  .footer-logo {
+    font-family: 'Dancing Script', cursive;
+    font-size: 2.5rem;
+    color: var(--rose);
+    margin-bottom: 0.8rem;
+    animation: pulseLogo 3s ease-in-out infinite;
+  }
+
+  .footer-tagline {
+    font-size: 0.85rem;
+    color: rgba(255,240,243,0.4);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+  }
+
+  .footer-divider {
+    width: 200px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(232,67,106,0.5), transparent);
+    margin: 0 auto 2rem;
+  }
+
+  .footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 2.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 2.5rem;
+  }
+  .footer-links a {
+    color: rgba(255,240,243,0.5);
+    text-decoration: none;
+    font-size: 0.85rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    transition: color 0.3s;
+  }
+  .footer-links a:hover { color: var(--rose); }
+
+  .footer-credit {
+    font-size: 0.8rem;
+    color: rgba(255,240,243,0.25);
+    letter-spacing: 1px;
+  }
+  .footer-credit span {
+    color: var(--rose);
+    font-weight: 600;
+    font-family: 'Dancing Script', cursive;
+    font-size: 1rem;
+  }
+
+  .footer-hearts {
+    font-size: 1rem;
+    color: var(--rose);
+    letter-spacing: 6px;
+    margin: 1.5rem 0 0.5rem;
+    animation: heartbeat 1.4s ease-in-out infinite;
+    display: inline-block;
+  }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 640px) {
+    nav a { display: none; }
+    .grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Custom cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-trail" id="cursorTrail"></div>
+
+<!-- Floating hearts bg -->
+<div class="hearts-bg" id="heartsBg"></div>
+
+<!-- ===== HEADER ===== -->
+<header>
+  <div class="logo">💖 LoveVerse</div>
+  <nav>
+    <a href="#">Home</a>
+    <a href="#">Explore</a>
+    <a href="#">Stories</a>
+    <a href="#">Connect</a>
+    <span class="nav-heart">♥</span>
+  </nav>
+</header>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <p class="hero-tag">✦ Curated with Love ✦</p>
+  <h1 class="hero-title">Where <em>Hearts</em><br>Find Their Home</h1>
+  <p class="hero-sub">Explore our handpicked collection of the most beautiful love destinations on the web — romance, connection, and joy in every click.</p>
+  <div class="hero-divider"></div>
+</section>
+
+<!-- ===== GRID ===== -->
+<section class="grid-section">
+  <p class="section-label">✦ Our Collection ✦</p>
+  <h2 class="section-title">Discover Love Online</h2>
+
+  <div class="grid">
+
+    <!-- Card 1 -->
+    <a href="https://wondermayank.github.io/love/1" class="card card-1">
+      <div class="card-glow"></div>
+      <div class="card-ribbon">Popular</div>
+      <div class="card-visual">
+        <span class="card-icon">💌</span>
+      </div>
+      <div class="card-body">
+        <span class="card-badge">Romance</span>
+        <h3 class="card-title">LoveLetters.co</h3>
+        <p class="card-desc">Craft heartfelt letters, poems, and messages for your beloved with AI-assisted romance writing tools.</p>
+        <div class="card-footer">
+          <span class="card-link">Visit Site →</span>
+          <span class="card-stat">♥ 12k lovers</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- Card 2 -->
+    <a href="https://wondermayank.github.io/love/2" class="card card-2">
+      <div class="card-glow"></div>
+      <div class="card-visual">
+        <span class="card-icon">💜</span>
+      </div>
+      <div class="card-body">
+        <span class="card-badge">Dating</span>
+        <h3 class="card-title">SoulMatch World</h3>
+        <p class="card-desc">A spiritual approach to matchmaking — find your soulmate through deep personality resonance.</p>
+        <div class="card-footer">
+          <span class="card-link">Visit Site →</span>
+          <span class="card-stat">♥ 8.4k souls</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- Card 3 -->
+    <a href="https://wondermayank.github.io/love/3" class="card card-3">
+      <div class="card-glow"></div>
+      <div class="card-ribbon">New</div>
+      <div class="card-visual">
+        <span class="card-icon">🌊</span>
+      </div>
+      <div class="card-body">
+        <span class="card-badge">Long Distance</span>
+        <h3 class="card-title">TwoHearts Apart</h3>
+        <p class="card-desc">Tools and games for couples across distances — sync your heartbeats no matter the miles.</p>
+        <div class="card-footer">
+          <span class="card-link">Visit Site →</span>
+          <span class="card-stat">♥ 5.1k pairs</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- Card 4 -->
+    <a href="https://wondermayank.github.io/love/4" class="card card-4">
+      <div class="card-glow"></div>
+      <div class="card-visual">
+        <span class="card-icon">🌹</span>
+      </div>
+      <div class="card-body">
+        <span class="card-badge">Gifts & Surprises</span>
+        <h3 class="card-title">Petal & Promise</h3>
+        <p class="card-desc">Curated romantic gift ideas, date night planners, and anniversary surprise generators.</p>
+        <div class="card-footer">
+          <span class="card-link">Visit Site →</span>
+          <span class="card-stat">♥ 20k gifts</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- Card 5 -->
+    <a hrefhttps://wondermayank.github.io/love/5" class="card card-5">
+      <div class="card-glow"></div>
+      <div class="card-ribbon">Trending</div>
+      <div class="card-visual">
+        <span class="card-icon">🌿</span>
+      </div>
+      <div class="card-body">
+        <span class="card-badge">Mindful Love</span>
+        <h3 class="card-title">LovenGrow</h3>
+        <p class="card-desc">Relationship wellness, couple journaling, and guided meditations to deepen your bond.</p>
+        <div class="card-footer">
+          <span class="card-link">Visit Site →</span>
+          <span class="card-stat">♥ 9k growing</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- Card 6 -->
+    <a href="https://wondermayank.github.io/love/6" class="card card-6">
+      <div class="card-glow"></div>
+      <div class="card-visual">
+        <span class="card-icon">🎭</span>
+      </div>
+      <div class="card-body">
+        <span class="card-badge">Stories</span>
+        <h3 class="card-title">RomanceReads</h3>
+        <p class="card-desc">An immersive library of real love stories, fiction, and interactive romantic adventures.</p>
+        <div class="card-footer">
+          <span class="card-link">Visit Site →</span>
+          <span class="card-stat">♥ 31k readers</span>
+        </div>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="footer-logo">💖 LoveVerse</div>
+  <p class="footer-tagline">Every heart deserves a destination</p>
+  <div class="footer-divider"></div>
+  <div class="footer-links">
+    <a href="#">About</a>
+    <a href="#">Privacy</a>
+    <a href="#">Submit Site</a>
+    <a href="#">Newsletter</a>
+    <a href="#">Contact</a>
+  </div>
+  <div class="footer-hearts">♥ ♥ ♥</div>
+  <p class="footer-credit">Crafted with love by <span>@thundertechnologyofficial</span> · © 2025 LoveVerse</p>
+</footer>
+
+<script>
+  // ─── Custom Cursor ───────────────────────────────────
+  const cursor = document.getElementById('cursor');
+  const trail = document.getElementById('cursorTrail');
+  let mx = 0, my = 0, tx = 0, ty = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top = my + 'px';
+  });
+
+  function animTrail() {
+    tx += (mx - tx) * 0.18;
+    ty += (my - ty) * 0.18;
+    trail.style.left = tx + 'px';
+    trail.style.top = ty + 'px';
+    requestAnimationFrame(animTrail);
+  }
+  animTrail();
+
+  document.querySelectorAll('.card, a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.width = '40px';
+      cursor.style.height = '40px';
+      cursor.style.background = 'var(--gold)';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.width = '20px';
+      cursor.style.height = '20px';
+      cursor.style.background = 'var(--rose)';
+    });
+  });
+
+  // ─── Floating Hearts ─────────────────────────────────
+  const heartsBg = document.getElementById('heartsBg');
+  const emojis = ['💗','💖','💕','💞','🌹','✨','💝','💓','🌸','💫','♥'];
+
+  function spawnHeart() {
+    const h = document.createElement('div');
+    h.className = 'heart-particle';
+    h.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    h.style.left = Math.random() * 100 + 'vw';
+    h.style.fontSize = (0.8 + Math.random() * 1.4) + 'rem';
+    const dur = 8 + Math.random() * 10;
+    h.style.animationDuration = dur + 's';
+    h.style.animationDelay = Math.random() * 3 + 's';
+    heartsBg.appendChild(h);
+    setTimeout(() => h.remove(), (dur + 3) * 1000);
+  }
+
+  // Spawn initial batch
+  for (let i = 0; i < 18; i++) setTimeout(spawnHeart, i * 200);
+  setInterval(spawnHeart, 1200);
+
+  // ─── Card sparkle trail on hover ─────────────────────
+  document.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const spark = document.createElement('div');
+      spark.className = 'sparkle';
+      spark.style.left = x + 'px';
+      spark.style.top = y + 'px';
+      card.appendChild(spark);
+      setTimeout(() => spark.remove(), 700);
+    });
+  });
+
+  // ─── Scroll-triggered card reveal ────────────────────
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.animationPlayState = 'running';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.card').forEach(c => {
+    c.style.animationPlayState = 'paused';
+    observer.observe(c);
+  });
+</script>
+</body>
+</html>
