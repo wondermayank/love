@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SoulMatch World — Find Your Divine Connection</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;600;700&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --midnight: #0a0612;
+    --deep: #100c1e;
+    --void: #080410;
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --gold-dim: #7a6230;
+    --lavender: #b89fd4;
+    --lavender-dim: #6b4f8a;
+    --rose: #d4748b;
+    --rose-dim: #7a3d4e;
+    --teal: #5ebfb4;
+    --white: #f5f0ff;
+    --white-dim: #c8bedd;
+    --text: #e8e0f5;
+    --muted: #9080aa;
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--midnight);
+    color: var(--text);
+    font-family: 'Lato', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    position: fixed;
+    width: 12px; height: 12px;
+    background: var(--gold);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: width .2s, height .2s, opacity .2s;
+    mix-blend-mode: screen;
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 36px; height: 36px;
+    border: 1px solid rgba(201,168,76,0.5);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: all .12s ease;
+  }
+
+  /* ─── STARFIELD ─── */
+  #starfield {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 60px;
+    background: linear-gradient(to bottom, rgba(10,6,18,0.95), transparent);
+  }
+  .nav-logo {
+    font-family: 'Cinzel', serif;
+    font-size: 1.15rem;
+    letter-spacing: .18em;
+    color: var(--gold);
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--lavender); }
+  .nav-links {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+  }
+  .nav-links a {
+    font-family: 'Lato', sans-serif;
+    font-size: .78rem;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--white-dim);
+    text-decoration: none;
+    transition: color .3s;
+    position: relative;
+  }
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px; left: 0; right: 0;
+    height: 1px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform .3s;
+  }
+  .nav-links a:hover { color: var(--gold); }
+  .nav-links a:hover::after { transform: scaleX(1); }
+  .nav-cta {
+    font-family: 'Cinzel', serif;
+    font-size: .75rem;
+    letter-spacing: .15em;
+    color: var(--midnight);
+    background: var(--gold);
+    border: none;
+    padding: 10px 24px;
+    cursor: none;
+    transition: background .3s, transform .2s;
+  }
+  .nav-cta:hover { background: var(--gold-light); transform: translateY(-1px); }
+
+  /* ─── HERO ─── */
+  #hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 100px 40px 60px;
+    z-index: 1;
+    overflow: hidden;
+  }
+
+  .mandala-bg {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(900px, 120vw);
+    height: min(900px, 120vw);
+    opacity: 0.07;
+    animation: rotateMandala 60s linear infinite;
+    pointer-events: none;
+  }
+  @keyframes rotateMandala { to { transform: translate(-50%,-50%) rotate(360deg); } }
+
+  .mandala-bg2 {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(600px, 80vw);
+    height: min(600px, 80vw);
+    opacity: 0.05;
+    animation: rotateMandala 40s linear infinite reverse;
+    pointer-events: none;
+  }
+
+  .hero-eyebrow {
+    font-family: 'Lato', sans-serif;
+    font-size: .72rem;
+    letter-spacing: .35em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 28px;
+    opacity: 0;
+    animation: fadeUp .8s .3s forwards;
+  }
+  .hero-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(3rem, 8vw, 7rem);
+    font-weight: 400;
+    line-height: 1.05;
+    letter-spacing: .04em;
+    color: var(--white);
+    text-shadow: 0 0 80px rgba(184,159,212,0.3);
+    margin-bottom: 12px;
+    opacity: 0;
+    animation: fadeUp .9s .5s forwards;
+  }
+  .hero-title em {
+    font-style: italic;
+    color: var(--lavender);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.15em;
+  }
+  .hero-title .gold { color: var(--gold); }
+
+  .hero-subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+    color: var(--lavender);
+    margin: 20px 0 50px;
+    max-width: 560px;
+    line-height: 1.7;
+    opacity: 0;
+    animation: fadeUp .9s .7s forwards;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    opacity: 0;
+    animation: fadeUp .9s .9s forwards;
+  }
+  .btn-primary {
+    font-family: 'Cinzel', serif;
+    font-size: .82rem;
+    letter-spacing: .15em;
+    color: var(--midnight);
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    border: none;
+    padding: 16px 40px;
+    cursor: none;
+    position: relative;
+    overflow: hidden;
+    transition: transform .2s, box-shadow .3s;
+    box-shadow: 0 4px 40px rgba(201,168,76,0.25);
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 60px rgba(201,168,76,0.4);
+  }
+  .btn-secondary {
+    font-family: 'Lato', sans-serif;
+    font-size: .78rem;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--white-dim);
+    background: none;
+    border: 1px solid rgba(255,255,255,0.15);
+    padding: 16px 36px;
+    cursor: none;
+    transition: border-color .3s, color .3s;
+  }
+  .btn-secondary:hover { border-color: var(--lavender); color: var(--lavender); }
+
+  .hero-stat-row {
+    display: flex;
+    gap: 60px;
+    margin-top: 80px;
+    opacity: 0;
+    animation: fadeUp .9s 1.1s forwards;
+  }
+  .hero-stat { text-align: center; }
+  .hero-stat-num {
+    font-family: 'Cinzel', serif;
+    font-size: 2rem;
+    color: var(--gold);
+    display: block;
+    line-height: 1;
+  }
+  .hero-stat-label {
+    font-size: .72rem;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── DIVIDER ─── */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 0 60px;
+    margin: 0;
+  }
+  .divider-line { flex: 1; height: 1px; background: linear-gradient(to right, transparent, rgba(201,168,76,0.3), transparent); }
+  .divider-icon { color: var(--gold); font-size: 1.2rem; }
+
+  /* ─── SECTION BASE ─── */
+  section { position: relative; z-index: 1; }
+  .section-tag {
+    font-family: 'Lato', sans-serif;
+    font-size: .68rem;
+    letter-spacing: .35em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+    display: block;
+  }
+  .section-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-weight: 400;
+    color: var(--white);
+    line-height: 1.15;
+    margin-bottom: 20px;
+  }
+  .section-body {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.15rem;
+    line-height: 1.85;
+    color: var(--white-dim);
+    max-width: 540px;
+  }
+
+  /* ─── HOW IT WORKS ─── */
+  #how {
+    padding: 120px 60px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  #how .intro { text-align: center; margin-bottom: 80px; }
+  #how .intro .section-body { margin: 0 auto; }
+
+  .steps-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+  .step {
+    background: var(--deep);
+    padding: 50px 40px;
+    position: relative;
+    overflow: hidden;
+    transition: background .3s;
+  }
+  .step:hover { background: #13102a; }
+  .step::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity: 0;
+    transition: opacity .4s;
+  }
+  .step:hover::before { opacity: 1; }
+  .step-num {
+    font-family: 'Cinzel', serif;
+    font-size: 3.5rem;
+    color: rgba(201,168,76,0.12);
+    line-height: 1;
+    margin-bottom: 24px;
+    font-weight: 700;
+  }
+  .step-icon {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    display: block;
+  }
+  .step h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--gold-light);
+    letter-spacing: .08em;
+    margin-bottom: 14px;
+  }
+  .step p {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+    color: var(--muted);
+  }
+
+  /* ─── COMPATIBILITY ─── */
+  #compat {
+    padding: 120px 60px;
+    background: linear-gradient(180deg, transparent, rgba(30,18,50,0.5) 50%, transparent);
+  }
+  .compat-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 100px;
+    align-items: center;
+  }
+  .compat-orb-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    height: 460px;
+  }
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+  }
+  .orb-1 {
+    width: 180px; height: 180px;
+    background: radial-gradient(circle, rgba(212,116,139,0.6), rgba(122,61,78,0.2));
+    top: 50px; left: 80px;
+    box-shadow: 0 0 60px rgba(212,116,139,0.4);
+    animation: orbFloat1 5s ease-in-out infinite;
+  }
+  .orb-2 {
+    width: 180px; height: 180px;
+    background: radial-gradient(circle, rgba(94,191,180,0.6), rgba(30,80,77,0.2));
+    top: 50px; right: 80px;
+    box-shadow: 0 0 60px rgba(94,191,180,0.4);
+    animation: orbFloat2 5.5s ease-in-out infinite;
+  }
+  .orb-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--white);
+    position: absolute;
+    text-align: center;
+  }
+  .orb-1-label { top: 110px; left: 65px; }
+  .orb-2-label { top: 110px; right: 55px; }
+  .heart-center {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3.5rem;
+    animation: heartPulse 2s ease-in-out infinite;
+    filter: drop-shadow(0 0 30px rgba(201,168,76,0.6));
+  }
+  .compat-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(201,168,76,0.15);
+    animation: expandRing 3s ease-out infinite;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .compat-ring:nth-child(2) { animation-delay: 1s; }
+  .compat-ring:nth-child(3) { animation-delay: 2s; }
+
+  @keyframes orbFloat1 {
+    0%,100% { transform: translate(0,0); }
+    50% { transform: translate(20px, -15px); }
+  }
+  @keyframes orbFloat2 {
+    0%,100% { transform: translate(0,0); }
+    50% { transform: translate(-20px, -15px); }
+  }
+  @keyframes heartPulse {
+    0%,100% { transform: translate(-50%,-50%) scale(1); }
+    50% { transform: translate(-50%,-50%) scale(1.15); }
+  }
+  @keyframes expandRing {
+    0% { width: 80px; height: 80px; opacity: .6; }
+    100% { width: 480px; height: 480px; opacity: 0; }
+  }
+
+  .compat-features { list-style: none; margin-top: 40px; }
+  .compat-features li {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 18px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    color: var(--white-dim);
+    line-height: 1.6;
+  }
+  .compat-features li:last-child { border-bottom: none; }
+  .feat-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    margin-top: 9px;
+    flex-shrink: 0;
+    box-shadow: 0 0 8px var(--gold);
+  }
+
+  /* ─── MODALITIES ─── */
+  #modalities {
+    padding: 120px 60px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  #modalities .intro { text-align: center; margin-bottom: 70px; }
+  .modality-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+  .modality-card {
+    background: linear-gradient(160deg, rgba(30,18,50,0.9), rgba(10,6,18,0.95));
+    border: 1px solid rgba(255,255,255,0.07);
+    padding: 36px 28px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transition: transform .3s, border-color .3s;
+    cursor: none;
+  }
+  .modality-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center bottom, rgba(201,168,76,0.08), transparent 70%);
+    opacity: 0;
+    transition: opacity .4s;
+  }
+  .modality-card:hover { transform: translateY(-6px); border-color: rgba(201,168,76,0.2); }
+  .modality-card:hover::after { opacity: 1; }
+  .mod-icon { font-size: 2.2rem; display: block; margin-bottom: 16px; }
+  .mod-name {
+    font-family: 'Cinzel', serif;
+    font-size: .9rem;
+    font-weight: 600;
+    letter-spacing: .12em;
+    color: var(--gold-light);
+    margin-bottom: 10px;
+  }
+  .mod-desc {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--muted);
+  }
+
+  /* ─── TESTIMONIALS ─── */
+  #testimonials {
+    padding: 120px 60px;
+    background: linear-gradient(180deg, transparent, rgba(20,10,36,0.7) 40%, rgba(20,10,36,0.7) 60%, transparent);
+  }
+  #testimonials .intro { text-align: center; margin-bottom: 70px; }
+  .testi-grid {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+  }
+  .testi-card {
+    background: rgba(20,14,38,0.8);
+    border: 1px solid rgba(255,255,255,0.07);
+    padding: 40px 32px;
+    position: relative;
+  }
+  .testi-card::before {
+    content: '\201C';
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 6rem;
+    color: rgba(201,168,76,0.12);
+    position: absolute;
+    top: 10px; left: 22px;
+    line-height: 1;
+  }
+  .testi-stars {
+    color: var(--gold);
+    font-size: .85rem;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+  }
+  .testi-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.05rem;
+    line-height: 1.75;
+    color: var(--white-dim);
+    margin-bottom: 28px;
+  }
+  .testi-author {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .testi-avatar {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem;
+    border: 1px solid rgba(201,168,76,0.3);
+  }
+  .testi-name {
+    font-family: 'Cinzel', serif;
+    font-size: .78rem;
+    letter-spacing: .1em;
+    color: var(--gold-light);
+  }
+  .testi-detail {
+    font-size: .72rem;
+    color: var(--muted);
+    margin-top: 3px;
+    letter-spacing: .05em;
+  }
+
+  /* ─── PROFILES ─── */
+  #profiles {
+    padding: 120px 60px;
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .profiles-row {
+    display: flex;
+    gap: 24px;
+    margin-top: 60px;
+    justify-content: center;
+  }
+  .profile-card {
+    background: linear-gradient(180deg, rgba(30,18,50,0.85), rgba(10,6,18,0.9));
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 40px 28px;
+    width: 220px;
+    text-align: center;
+    transition: transform .3s, box-shadow .3s;
+    cursor: none;
+  }
+  .profile-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 24px 60px rgba(0,0,0,0.4), 0 0 40px rgba(184,159,212,0.08);
+  }
+  .profile-avatar {
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.2rem;
+    position: relative;
+  }
+  .profile-avatar::after {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    border: 1px solid transparent;
+    background: linear-gradient(135deg, var(--gold), var(--lavender)) border-box;
+    -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: destination-out;
+  }
+  .profile-name {
+    font-family: 'Cinzel', serif;
+    font-size: .9rem;
+    letter-spacing: .08em;
+    color: var(--white);
+    margin-bottom: 6px;
+  }
+  .profile-sign {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: .9rem;
+    color: var(--lavender);
+    margin-bottom: 14px;
+  }
+  .profile-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: center;
+  }
+  .tag {
+    font-size: .62rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 4px 10px;
+    border-radius: 2px;
+  }
+  .match-badge {
+    display: inline-block;
+    margin-top: 16px;
+    font-size: .65rem;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    border: 1px solid rgba(201,168,76,0.3);
+    padding: 4px 12px;
+  }
+
+  /* ─── CTA ─── */
+  #cta {
+    padding: 160px 60px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  #cta::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(107,79,138,0.15), transparent 70%);
+    pointer-events: none;
+  }
+  #cta .section-title { font-size: clamp(2.4rem, 5vw, 4.5rem); }
+  .cta-sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.25rem;
+    color: var(--lavender);
+    margin: 20px auto 50px;
+    max-width: 480px;
+    line-height: 1.7;
+  }
+  .cta-form {
+    display: flex;
+    gap: 0;
+    max-width: 480px;
+    margin: 0 auto 20px;
+  }
+  .cta-input {
+    flex: 1;
+    padding: 16px 20px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-right: none;
+    color: var(--text);
+    font-family: 'Lato', sans-serif;
+    font-size: .9rem;
+    outline: none;
+    transition: border-color .3s;
+  }
+  .cta-input::placeholder { color: var(--muted); }
+  .cta-input:focus { border-color: rgba(201,168,76,0.4); }
+  .cta-note {
+    font-size: .72rem;
+    letter-spacing: .1em;
+    color: var(--muted);
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    border-top: 1px solid rgba(255,255,255,0.05);
+    padding: 60px;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 60px;
+    max-width: 1300px;
+    margin: 0 auto;
+  }
+  .footer-brand .logo {
+    font-family: 'Cinzel', serif;
+    font-size: 1.2rem;
+    color: var(--gold);
+    letter-spacing: .15em;
+    margin-bottom: 14px;
+  }
+  .footer-brand p {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--muted);
+    max-width: 260px;
+  }
+  .footer-col h4 {
+    font-family: 'Cinzel', serif;
+    font-size: .72rem;
+    letter-spacing: .2em;
+    color: var(--gold);
+    margin-bottom: 20px;
+  }
+  .footer-col ul { list-style: none; }
+  .footer-col ul li {
+    margin-bottom: 12px;
+    font-size: .82rem;
+    color: var(--muted);
+    letter-spacing: .05em;
+    transition: color .3s;
+    cursor: none;
+  }
+  .footer-col ul li:hover { color: var(--white-dim); }
+  .footer-bottom {
+    text-align: center;
+    padding: 20px 60px 40px;
+    font-size: .7rem;
+    letter-spacing: .15em;
+    color: rgba(144,128,170,0.4);
+  }
+
+  /* ─── SCROLL REVEAL ─── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity .7s ease, transform .7s ease;
+  }
+  .reveal.visible { opacity: 1; transform: none; }
+  .reveal-delay-1 { transition-delay: .1s; }
+  .reveal-delay-2 { transition-delay: .2s; }
+  .reveal-delay-3 { transition-delay: .3s; }
+  .reveal-delay-4 { transition-delay: .4s; }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<canvas id="starfield"></canvas>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">Soul<span>Match</span> World</a>
+  <ul class="nav-links">
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#compat">Compatibility</a></li>
+    <li><a href="#modalities">Modalities</a></li>
+    <li><a href="#testimonials">Stories</a></li>
+  </ul>
+  <button class="nav-cta">Begin Your Journey</button>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <!-- Mandala SVGs -->
+  <svg class="mandala-bg" viewBox="0 0 600 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <g stroke="#C9A84C" stroke-width="0.8">
+      <circle cx="300" cy="300" r="280"/>
+      <circle cx="300" cy="300" r="240"/>
+      <circle cx="300" cy="300" r="200"/>
+      <circle cx="300" cy="300" r="160"/>
+      <circle cx="300" cy="300" r="120"/>
+      <circle cx="300" cy="300" r="80"/>
+      <circle cx="300" cy="300" r="40"/>
+      <!-- Petals -->
+      <ellipse cx="300" cy="160" rx="20" ry="60"/>
+      <ellipse cx="300" cy="440" rx="20" ry="60"/>
+      <ellipse cx="160" cy="300" rx="60" ry="20"/>
+      <ellipse cx="440" cy="300" rx="60" ry="20"/>
+      <ellipse cx="199" cy="199" rx="20" ry="60" transform="rotate(45 199 199)"/>
+      <ellipse cx="401" cy="401" rx="20" ry="60" transform="rotate(45 401 401)"/>
+      <ellipse cx="401" cy="199" rx="20" ry="60" transform="rotate(-45 401 199)"/>
+      <ellipse cx="199" cy="401" rx="20" ry="60" transform="rotate(-45 199 401)"/>
+      <!-- Star lines -->
+      <line x1="300" y1="20" x2="300" y2="580"/>
+      <line x1="20" y1="300" x2="580" y2="300"/>
+      <line x1="76" y1="76" x2="524" y2="524"/>
+      <line x1="524" y1="76" x2="76" y2="524"/>
+      <!-- Outer petals -->
+      <ellipse cx="300" cy="50" rx="12" ry="40"/>
+      <ellipse cx="300" cy="550" rx="12" ry="40"/>
+      <ellipse cx="50" cy="300" rx="40" ry="12"/>
+      <ellipse cx="550" cy="300" rx="40" ry="12"/>
+    </g>
+  </svg>
+  <svg class="mandala-bg2" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <g stroke="#B89FD4" stroke-width="0.8">
+      <polygon points="200,30 370,310 30,310" fill="none"/>
+      <polygon points="200,370 30,90 370,90" fill="none"/>
+      <circle cx="200" cy="200" r="170"/>
+      <circle cx="200" cy="200" r="130"/>
+      <circle cx="200" cy="200" r="90"/>
+      <circle cx="200" cy="200" r="50"/>
+    </g>
+  </svg>
+
+  <p class="hero-eyebrow">✦ Where Ancient Wisdom Meets Modern Love ✦</p>
+  <h1 class="hero-title">
+    Find Your<br><em>Soul</em> <span class="gold">Mate</span>
+  </h1>
+  <p class="hero-subtitle">
+    Connect through astrology, energy alignment & sacred compatibility — beyond surface, into soul.
+  </p>
+  <div class="hero-actions">
+    <button class="btn-primary">Discover Your Match</button>
+    <button class="btn-secondary">Watch How It Works</button>
+  </div>
+  <div class="hero-stat-row">
+    <div class="hero-stat">
+      <span class="hero-stat-num">240K+</span>
+      <div class="hero-stat-label">Souls Connected</div>
+    </div>
+    <div class="hero-stat">
+      <span class="hero-stat-num">18K</span>
+      <div class="hero-stat-label">Unions Formed</div>
+    </div>
+    <div class="hero-stat">
+      <span class="hero-stat-num">97%</span>
+      <div class="hero-stat-label">Alignment Score</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"><div class="divider-line"></div><span class="divider-icon">✦</span><div class="divider-line"></div></div>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="intro reveal">
+    <span class="section-tag">✦ The Sacred Path</span>
+    <h2 class="section-title">How Soul Matching Works</h2>
+    <p class="section-body">We combine ancient esoteric systems with modern intuition science to reveal who truly resonates with your spirit.</p>
+  </div>
+  <div class="steps-grid">
+    <div class="step reveal reveal-delay-1">
+      <div class="step-num">01</div>
+      <span class="step-icon">🌌</span>
+      <h3>Birth Chart Reading</h3>
+      <p>Enter your birth date, time, and place. We map your full natal chart — sun, moon, rising, Venus, and beyond — to understand your cosmic blueprint.</p>
+    </div>
+    <div class="step reveal reveal-delay-2">
+      <div class="step-num">02</div>
+      <span class="step-icon">🔮</span>
+      <h3>Soul Archetype Quiz</h3>
+      <p>A 12-minute intuitive questionnaire reveals your Human Design type, Enneagram, and vibrational frequency. Your unique soul signature.</p>
+    </div>
+    <div class="step reveal reveal-delay-3">
+      <div class="step-num">03</div>
+      <span class="step-icon">💞</span>
+      <h3>Divine Match Reveal</h3>
+      <p>Our algorithm synthesises 40+ compatibility vectors to surface your highest-resonance matches — then steps aside so souls can speak.</p>
+    </div>
+  </div>
+</section>
+
+<!-- COMPATIBILITY -->
+<section id="compat">
+  <div class="compat-inner">
+    <div class="compat-orb-wrap reveal">
+      <div class="compat-ring" style="width:80px;height:80px;"></div>
+      <div class="compat-ring" style="width:80px;height:80px;"></div>
+      <div class="compat-ring" style="width:80px;height:80px;"></div>
+      <div class="orb orb-1">
+        <span class="orb-label orb-1-label">You</span>
+      </div>
+      <div class="orb orb-2">
+        <span class="orb-label orb-2-label">Them</span>
+      </div>
+      <div class="heart-center">💛</div>
+    </div>
+    <div class="reveal reveal-delay-2">
+      <span class="section-tag">✦ Deep Compatibility</span>
+      <h2 class="section-title">Beyond Sun Signs</h2>
+      <p class="section-body">
+        True compatibility lives beneath the surface. Our multidimensional system reads the full spectrum of who you are — and finds its mirror.
+      </p>
+      <ul class="compat-features">
+        <li><div class="feat-dot"></div>Synastry chart overlay across 12 planetary positions</li>
+        <li><div class="feat-dot"></div>Chakra energy resonance & Kundalini compatibility scoring</li>
+        <li><div class="feat-dot"></div>Human Design authority & strategy alignment</li>
+        <li><div class="feat-dot"></div>Numerology life path & expression number harmony</li>
+        <li><div class="feat-dot"></div>Vedic Nakshatra moon compatibility (Kuta matching)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- MODALITIES -->
+<section id="modalities">
+  <div class="intro reveal">
+    <span class="section-tag">✦ Sacred Systems</span>
+    <h2 class="section-title">Spiritual Modalities We Honour</h2>
+  </div>
+  <div class="modality-grid">
+    <div class="modality-card reveal reveal-delay-1">
+      <span class="mod-icon">♈</span>
+      <div class="mod-name">Western Astrology</div>
+      <p class="mod-desc">Full natal chart synastry — sun, moon, rising, Venus & Mars interplay.</p>
+    </div>
+    <div class="modality-card reveal reveal-delay-2">
+      <span class="mod-icon">🕉️</span>
+      <div class="mod-name">Vedic Jyotish</div>
+      <p class="mod-desc">Nakshatra moon matching, Kuta scoring, Doshas and Dasha compatibility.</p>
+    </div>
+    <div class="modality-card reveal reveal-delay-3">
+      <span class="mod-icon">🔷</span>
+      <div class="mod-name">Human Design</div>
+      <p class="mod-desc">Type, authority, profile & electromagnetic connection between charts.</p>
+    </div>
+    <div class="modality-card reveal reveal-delay-4">
+      <span class="mod-icon">🔢</span>
+      <div class="mod-name">Numerology</div>
+      <p class="mod-desc">Life path, expression & soul urge number harmonics and life cycles.</p>
+    </div>
+    <div class="modality-card reveal reveal-delay-1">
+      <span class="mod-icon">🌀</span>
+      <div class="mod-name">Chakra Mapping</div>
+      <p class="mod-desc">Seven-chakra energy assessment reveals energetic points of resonance.</p>
+    </div>
+    <div class="modality-card reveal reveal-delay-2">
+      <span class="mod-icon">🧩</span>
+      <div class="mod-name">Enneagram</div>
+      <p class="mod-desc">Type dynamics, growth arrows & compatibility between all nine types.</p>
+    </div>
+    <div class="modality-card reveal reveal-delay-3">
+      <span class="mod-icon">🃏</span>
+      <div class="mod-name">Tarot Archetypes</div>
+      <p class="mod-desc">Your birth card and major arcana shadow integration for deeper knowing.</p>
+    </div>
+    <div class="modality-card reveal reveal-delay-4">
+      <span class="mod-icon">🌿</span>
+      <div class="mod-name">Gene Keys</div>
+      <p class="mod-desc">Venus sequence pathway & the sphere of attraction in your hologenetic profile.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"><div class="divider-line"></div><span class="divider-icon">✦</span><div class="divider-line"></div></div>
+
+<!-- PROFILES -->
+<section id="profiles">
+  <span class="section-tag reveal">✦ Souls Awaiting</span>
+  <h2 class="section-title reveal">Recent Soul Travellers</h2>
+  <div class="profiles-row">
+    <div class="profile-card reveal reveal-delay-1">
+      <div class="profile-avatar" style="background:radial-gradient(circle,rgba(212,116,139,0.2),rgba(10,6,18,0.8))">🌸</div>
+      <div class="profile-name">Ariana</div>
+      <div class="profile-sign">♏ Scorpio Rising</div>
+      <div class="profile-tags">
+        <span class="tag">Projector</span>
+        <span class="tag">4/6 Profile</span>
+        <span class="tag">Path 7</span>
+      </div>
+      <div class="match-badge">94% Match Available</div>
+    </div>
+    <div class="profile-card reveal reveal-delay-2">
+      <div class="profile-avatar" style="background:radial-gradient(circle,rgba(94,191,180,0.2),rgba(10,6,18,0.8))">🌊</div>
+      <div class="profile-name">Kiran</div>
+      <div class="profile-sign">♓ Pisces Sun</div>
+      <div class="profile-tags">
+        <span class="tag">Manifesting Gen.</span>
+        <span class="tag">2/4 Profile</span>
+        <span class="tag">Path 11</span>
+      </div>
+      <div class="match-badge">88% Match Available</div>
+    </div>
+    <div class="profile-card reveal reveal-delay-3">
+      <div class="profile-avatar" style="background:radial-gradient(circle,rgba(201,168,76,0.2),rgba(10,6,18,0.8))">☀️</div>
+      <div class="profile-name">Elara</div>
+      <div class="profile-sign">♌ Leo Moon</div>
+      <div class="profile-tags">
+        <span class="tag">Generator</span>
+        <span class="tag">1/3 Profile</span>
+        <span class="tag">Path 22</span>
+      </div>
+      <div class="match-badge">91% Match Available</div>
+    </div>
+    <div class="profile-card reveal reveal-delay-4">
+      <div class="profile-avatar" style="background:radial-gradient(circle,rgba(184,159,212,0.2),rgba(10,6,18,0.8))">🌙</div>
+      <div class="profile-name">Soren</div>
+      <div class="profile-sign">♒ Aquarius Venus</div>
+      <div class="profile-tags">
+        <span class="tag">Reflector</span>
+        <span class="tag">3/5 Profile</span>
+        <span class="tag">Path 33</span>
+      </div>
+      <div class="match-badge">96% Match Available</div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="intro reveal">
+    <span class="section-tag">✦ Sacred Unions</span>
+    <h2 class="section-title">Souls Who Found Each Other</h2>
+  </div>
+  <div class="testi-grid">
+    <div class="testi-card reveal reveal-delay-1">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">I had tried every app. SoulMatch was different from the first message — my match knew my moon sign, spoke to my energy. We got engaged six months later.</p>
+      <div class="testi-author">
+        <div class="testi-avatar">🌺</div>
+        <div>
+          <div class="testi-name">Maya & Dhruv</div>
+          <div class="testi-detail">Scorpio ✦ Pisces · Mumbai</div>
+        </div>
+      </div>
+    </div>
+    <div class="testi-card reveal reveal-delay-2">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">We were matched based on Venus synastry and Human Design electromagnetic. Meeting her felt like coming home to a place I had never been before.</p>
+      <div class="testi-author">
+        <div class="testi-avatar">🌿</div>
+        <div>
+          <div class="testi-name">Leo & Celia</div>
+          <div class="testi-detail">Taurus ✦ Virgo · Barcelona</div>
+        </div>
+      </div>
+    </div>
+    <div class="testi-card reveal reveal-delay-3">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">The chakra compatibility report described our dynamic so precisely it made me cry. This platform understands love at a frequency most apps cannot touch.</p>
+      <div class="testi-author">
+        <div class="testi-avatar">🔮</div>
+        <div>
+          <div class="testi-name">Nour & Theo</div>
+          <div class="testi-detail">Cancer ✦ Capricorn · Paris</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <span class="section-tag reveal" style="margin-bottom:20px;display:block;">✦ Begin Your Journey</span>
+  <h2 class="section-title reveal">Your Person<br><em style="font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--lavender)">is Waiting</em></h2>
+  <p class="cta-sub reveal">Join thousands of seekers who chose depth over swipe, soul over surface.</p>
+  <div class="cta-form reveal">
+    <input class="cta-input" type="email" placeholder="Enter your email address…">
+    <button class="btn-primary" style="white-space:nowrap;padding:16px 28px;">Start Free →</button>
+  </div>
+  <p class="cta-note reveal">No credit card required · Guided onboarding · Cancel anytime</p>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">
+    <div class="logo">SoulMatch World</div>
+    <p>Where ancient wisdom and modern hearts converge to reveal your deepest, most enduring connection.</p>
+  </div>
+  <div class="footer-col">
+    <h4>Explore</h4>
+    <ul>
+      <li>How It Works</li>
+      <li>Compatibility Quiz</li>
+      <li>Soul Archetypes</li>
+      <li>Birth Chart Reading</li>
+      <li>Success Stories</li>
+    </ul>
+  </div>
+  <div class="footer-col">
+    <h4>Community</h4>
+    <ul>
+      <li>Soul Circles</li>
+      <li>Live Events</li>
+      <li>Astrology Blog</li>
+      <li>Guides & Rituals</li>
+      <li>Newsletter</li>
+    </ul>
+  </div>
+  <div class="footer-col">
+    <h4>Support</h4>
+    <ul>
+      <li>Privacy & Safety</li>
+      <li>Terms of Service</li>
+      <li>Help Centre</li>
+      <li>Contact Us</li>
+      <li>Accessibility</li>
+    </ul>
+  </div>
+</footer>
+<div class="footer-bottom">
+  © 2026 SoulMatch World · All rights reserved · Made with 💜 for seekers everywhere
+</div>
+
+<script>
+  // ── Custom Cursor ──
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = -100, my = -100, rx = -100, ry = -100;
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+  function animateCursor() {
+    cursor.style.left = mx + 'px';
+    cursor.style.top = my + 'px';
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animateCursor);
+  }
+  animateCursor();
+
+  // ── Starfield ──
+  const canvas = document.getElementById('starfield');
+  const ctx = canvas.getContext('2d');
+  let stars = [];
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  function createStars(n) {
+    stars = [];
+    for (let i = 0; i < n; i++) {
+      stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 1.2 + 0.2,
+        o: Math.random(),
+        speed: Math.random() * 0.003 + 0.001,
+        phase: Math.random() * Math.PI * 2
+      });
+    }
+  }
+  createStars(220);
+
+  function drawStars(t) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (const s of stars) {
+      const alpha = 0.3 + 0.5 * Math.sin(s.phase + t * s.speed * 60);
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,255,240,${alpha})`;
+      ctx.fill();
+    }
+    requestAnimationFrame(drawStars);
+  }
+  requestAnimationFrame(drawStars);
+
+  // ── Scroll Reveal ──
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
