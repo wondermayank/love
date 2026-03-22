@@ -1,0 +1,1061 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>LoveLetters.co</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Cormorant+Infant:ital,wght@0,300;1,400&family=Great+Vibes&family=Lora:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#080309;--card:#180c16;--card2:#221020;--surf:#0f060e;
+  --rose:#d4415c;--gold:#e8b86d;--cream:#f0dac8;--faded:#8a6558;
+  --border:rgba(212,65,92,.18);--grad:linear-gradient(135deg,#d4415c,#8b1a2a);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--cream);font-family:'Lora',Georgia,serif;min-height:100vh;overflow-x:hidden;}
+
+/* CURSOR */
+#cur{position:fixed;width:18px;height:18px;border:2px solid #ff6b85;border-radius:50%;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);top:-40px;left:-40px;transition:width .14s,height .14s,border-color .14s;background:rgba(255,107,133,.05);}
+#cur.big{width:30px;height:30px;border-color:var(--gold);}
+
+/* PARTICLES */
+#pLayer{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0;}
+.pt{position:absolute;bottom:-40px;pointer-events:none;user-select:none;animation:ptUp linear infinite;opacity:0;}
+@keyframes ptUp{0%{transform:translateY(0)rotate(0deg);opacity:0;}10%{opacity:.35;}88%{opacity:.1;}100%{transform:translateY(-108vh)rotate(520deg);opacity:0;}}
+
+/* TOAST */
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(60px);background:var(--card2);color:var(--cream);border:1px solid rgba(212,65,92,.4);border-radius:6px;padding:10px 22px;font-size:.86rem;z-index:99999;pointer-events:none;transition:transform .35s ease,opacity .35s;opacity:0;white-space:nowrap;}
+#toast.on{transform:translateX(-50%) translateY(0);opacity:1;}
+
+/* ══ SHARE MODAL ══ */
+#shareOv{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:50000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s;}
+#shareOv.on{opacity:1;pointer-events:all;}
+#shareMod{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:36px 30px;width:min(500px,94vw);position:relative;transform:scale(.93) translateY(14px);transition:transform .36s cubic-bezier(.23,1,.32,1);box-shadow:0 28px 80px rgba(0,0,0,.72);}
+#shareOv.on #shareMod{transform:scale(1) translateY(0);}
+#shareMod::before{content:'💌';position:absolute;top:-26px;left:50%;transform:translateX(-50%);font-size:2.5rem;filter:drop-shadow(0 4px 14px rgba(212,65,92,.6));animation:popBounce .5s cubic-bezier(.34,1.56,.64,1) .04s both;}
+@keyframes popBounce{from{transform:translateX(-50%) scale(0);}to{transform:translateX(-50%) scale(1);}}
+.sh-x{position:absolute;top:12px;right:14px;background:none;border:none;font-size:1.2rem;color:var(--faded);cursor:pointer;padding:4px;transition:color .2s,transform .2s;}
+.sh-x:hover{color:var(--rose);transform:rotate(90deg);}
+.sh-h{font-family:'Cinzel',serif;font-size:1.3rem;color:var(--gold);text-align:center;margin-bottom:5px;}
+.sh-s{text-align:center;font-size:.83rem;font-style:italic;color:var(--faded);margin-bottom:18px;}
+
+/* share link box */
+.sh-linkbox{background:var(--surf);border:1px solid rgba(212,65,92,.3);border-radius:8px;padding:18px 20px;margin-bottom:18px;}
+.sh-link-label{font-size:.58rem;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:10px;display:block;}
+.sh-link-row{display:flex;gap:8px;margin-bottom:10px;}
+.sh-link-row input{flex:1;padding:9px 12px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:4px;font-family:'Lora',serif;font-size:.78rem;color:var(--cream);outline:none;cursor:text;}
+.sh-link-row button{padding:9px 14px;background:var(--rose);color:#fff;border:none;border-radius:4px;font-family:'Lora',serif;font-size:.74rem;font-weight:700;letter-spacing:1.5px;cursor:pointer;transition:background .2s;white-space:nowrap;}
+.sh-link-row button:hover{background:#8b1a2a;}
+.sh-preview{font-size:.78rem;font-style:italic;color:var(--faded);display:none;max-height:60px;overflow:hidden;line-height:1.6;position:relative;}
+.sh-preview.vis{display:block;}
+.sh-preview::after{content:'';position:absolute;bottom:0;left:0;right:0;height:22px;background:linear-gradient(transparent,var(--surf));}
+
+.sh-or{text-align:center;font-size:.6rem;letter-spacing:3px;text-transform:uppercase;color:var(--faded);margin:12px 0;}
+.sh-btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;}
+.shb{display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:4px;border:1.5px solid;font-family:'Lora',serif;font-size:.75rem;font-weight:600;cursor:pointer;transition:all .22s;text-decoration:none;background:none;}
+.shb:hover{transform:translateY(-2px);}
+.b-wa{border-color:#25d366;color:#25d366;}.b-wa:hover{background:#25d366;color:#fff;}
+.b-tg{border-color:#0088cc;color:#0088cc;}.b-tg:hover{background:#0088cc;color:#fff;}
+.b-tw{border-color:#1da1f2;color:#1da1f2;}.b-tw:hover{background:#1da1f2;color:#fff;}
+.b-ml{border-color:var(--rose);color:var(--rose);}.b-ml:hover{background:var(--rose);color:#fff;}
+
+/* ══ SHARED CONTENT VIEW (opened via URL) ══ */
+#sharedView{display:none;min-height:100vh;position:relative;}
+#sharedView.active{display:block;}
+.sv-bg{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 60% 50% at 50% 30%,rgba(139,26,42,.5) 0%,transparent 65%),radial-gradient(ellipse 30% 30% at 80% 15%,rgba(232,184,109,.08) 0%,transparent 55%);}
+.sv-wrap{max-width:660px;margin:0 auto;padding:4rem 2rem 5rem;position:relative;z-index:1;}
+.sv-badge{display:inline-block;font-size:.58rem;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:18px;padding:.3rem .8rem;border:1px solid rgba(232,184,109,.3);border-radius:20px;}
+.sv-type{font-size:.62rem;letter-spacing:5px;text-transform:uppercase;color:var(--faded);margin-bottom:10px;text-align:center;}
+.sv-title{font-family:'Great Vibes',cursive;font-size:clamp(2.4rem,6vw,4.2rem);color:var(--rose);text-align:center;margin-bottom:30px;text-shadow:0 0 30px rgba(212,65,92,.4);line-height:1.2;}
+.sv-paper{
+  background:linear-gradient(160deg,#1e0c1a,#140a12);
+  border:1px solid rgba(212,65,92,.2);border-radius:12px;
+  padding:3rem 2.8rem;position:relative;
+  box-shadow:0 20px 60px rgba(0,0,0,.6),0 0 40px rgba(212,65,92,.06);
+}
+.sv-paper::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--rose),var(--gold),var(--rose),transparent);}
+.sv-paper::after{
+  content:'';position:absolute;inset:0;border-radius:12px;
+  background:repeating-linear-gradient(transparent,transparent 33px,rgba(212,65,92,.055) 33px,rgba(212,65,92,.055) 34px);
+  pointer-events:none;
+}
+.sv-content{
+  font-family:'Cormorant Infant',serif;font-size:1.12rem;
+  font-style:italic;color:var(--cream);line-height:2.1;
+  white-space:pre-line;position:relative;z-index:1;
+}
+.sv-seal{text-align:center;margin-top:30px;font-size:1.5rem;opacity:.6;}
+.sv-credit{text-align:center;margin-top:30px;}
+.sv-credit a{color:var(--gold);font-family:'Great Vibes',cursive;font-size:1.3rem;text-decoration:none;opacity:.7;transition:opacity .25s;}
+.sv-credit a:hover{opacity:1;}
+.sv-credit p{font-size:.6rem;letter-spacing:3px;text-transform:uppercase;color:var(--faded);margin-top:5px;}
+.sv-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:28px;}
+.sv-anon{text-align:center;margin-bottom:20px;}
+.sv-anon span{display:inline-block;background:rgba(212,65,92,.12);border:1px solid rgba(212,65,92,.3);color:var(--faded);font-size:.64rem;letter-spacing:2px;text-transform:uppercase;padding:.35rem 1rem;border-radius:20px;}
+
+/* ══ HEADER ══ */
+header{position:sticky;top:0;z-index:9000;height:68px;background:rgba(8,3,9,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 5vw;}
+header::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--rose) 30%,var(--gold) 50%,var(--rose) 70%,transparent);}
+.hdr-l{display:flex;align-items:center;gap:10px;}
+#backBtn{display:none;align-items:center;gap:5px;background:none;border:1px solid var(--border);color:var(--faded);padding:5px 12px;border-radius:4px;font-family:'Lora',serif;font-size:.72rem;letter-spacing:1px;cursor:pointer;transition:all .25s;}
+#backBtn:hover{color:var(--rose);border-color:var(--rose);}
+.brand{display:flex;align-items:center;gap:10px;cursor:pointer;}
+.bseal{width:36px;height:36px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:.95rem;box-shadow:0 0 14px rgba(212,65,92,.4);animation:sGlow 3s ease-in-out infinite;}
+@keyframes sGlow{0%,100%{box-shadow:0 0 14px rgba(212,65,92,.4);}50%{box-shadow:0 0 28px rgba(212,65,92,.72),0 0 42px rgba(232,184,109,.18);}}
+.bname{font-family:'Great Vibes',cursive;font-size:1.9rem;color:var(--rose);line-height:1;}
+#hdrLabel{font-family:'Cinzel',serif;font-size:.78rem;color:var(--gold);letter-spacing:2px;display:none;}
+nav{display:flex;align-items:center;gap:4px;}
+.nb{background:none;border:none;color:var(--faded);font-family:'Lora',serif;font-size:.68rem;letter-spacing:1.5px;text-transform:uppercase;padding:5px 8px;cursor:pointer;transition:color .22s;}
+.nb:hover{color:var(--rose);}
+.nsb{background:var(--rose);color:#fff;border:none;padding:7px 16px;border-radius:4px;font-family:'Lora',serif;font-size:.68rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;margin-left:4px;transition:background .25s,transform .2s;display:flex;align-items:center;gap:5px;}
+.nsb:hover{background:#8b1a2a;transform:translateY(-1px);}
+
+/* ══ VIEW SYSTEM ══ */
+.view{display:none;}
+.view.active{display:block;animation:vIn .38s ease both;}
+@keyframes vIn{from{opacity:0;transform:translateY(15px);}to{opacity:1;transform:translateY(0);}}
+
+/* ══ BUTTONS ══ */
+.btn{display:inline-flex;align-items:center;gap:7px;font-family:'Lora',serif;font-size:.75rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:10px 20px;border-radius:4px;cursor:pointer;transition:all .24s;border:none;}
+.b-rose{background:var(--rose);color:#fff;box-shadow:0 4px 14px rgba(212,65,92,.28);}.b-rose:hover{background:#8b1a2a;transform:translateY(-1px);}
+.b-gold{background:transparent;color:var(--gold);border:1.5px solid rgba(232,184,109,.36);}.b-gold:hover{background:rgba(232,184,109,.07);border-color:var(--gold);}
+.b-surf{background:var(--surf);color:var(--cream);border:1px solid var(--border);}.b-surf:hover{border-color:rgba(212,65,92,.38);color:var(--rose);}
+.brow{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:16px;}
+
+/* ══ HOME ══ */
+.hero{position:relative;min-height:88vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:6rem 2rem 3rem;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 60% 50% at 50% 35%,rgba(139,26,42,.4) 0%,transparent 68%),radial-gradient(ellipse 30% 30% at 80% 18%,rgba(232,184,109,.07) 0%,transparent 55%);}
+.hero>*{position:relative;z-index:1;}
+.hl{font-size:.62rem;letter-spacing:6px;text-transform:uppercase;color:var(--gold);margin-bottom:18px;animation:rU .8s ease .1s both;}
+.ht{font-family:'Cormorant Infant',serif;font-size:clamp(2.8rem,7vw,6.5rem);font-weight:300;line-height:1.03;color:var(--cream);margin-bottom:16px;animation:rU .9s ease .25s both;}
+.ht em{font-family:'Great Vibes',cursive;font-style:normal;color:var(--rose);font-size:1.18em;display:block;line-height:1.1;text-shadow:0 0 28px rgba(212,65,92,.4);}
+.hd{font-size:1rem;font-style:italic;color:var(--faded);max-width:440px;line-height:1.85;margin:0 auto 30px;animation:rU .9s ease .4s both;}
+.ha{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;animation:rU .9s ease .54s both;}
+.hr{width:90px;height:1.5px;background:linear-gradient(90deg,transparent,var(--rose),var(--gold),transparent);margin:26px auto 0;animation:rU .6s ease .7s both;}
+@keyframes rU{from{opacity:0;transform:translateY(22px);}to{opacity:1;transform:translateY(0);}}
+
+.gs{padding:2rem 5vw 6rem;position:relative;z-index:1;}
+.sl{text-align:center;font-size:.6rem;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}
+.st{text-align:center;font-family:'Cinzel',serif;font-size:clamp(1.4rem,3vw,2.2rem);color:var(--cream);margin-bottom:8px;}
+.sd{text-align:center;font-style:italic;color:var(--faded);font-size:.9rem;margin-bottom:3rem;}
+.cg{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:18px;max-width:1100px;margin:0 auto;}
+
+.tc{background:linear-gradient(145deg,var(--card),var(--card2));border:1px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;position:relative;transition:transform .34s cubic-bezier(.23,1,.32,1),box-shadow .34s,border-color .28s;}
+.tc:hover{transform:translateY(-8px);border-color:rgba(212,65,92,.44);box-shadow:0 18px 50px rgba(0,0,0,.5),0 0 26px rgba(212,65,92,.1);}
+.tcv{height:148px;display:flex;align-items:center;justify-content:center;font-size:3rem;}
+.v1{background:linear-gradient(135deg,#200820,#480e2c);}
+.v2{background:linear-gradient(135deg,#0e1420,#182040);}
+.v3{background:linear-gradient(135deg,#1a0d20,#32124a);}
+.v4{background:linear-gradient(135deg,#1a0812,#3e0e1a);}
+.v5{background:linear-gradient(135deg,#0d1916,#143228);}
+.v6{background:linear-gradient(135deg,#1a0f08,#382010);}
+.tci{transition:transform .38s cubic-bezier(.34,1.56,.64,1);filter:drop-shadow(0 0 10px rgba(212,65,92,.38));}
+.tc:hover .tci{transform:scale(1.2) rotate(-6deg);}
+.tc-rb{position:absolute;top:12px;right:0;background:var(--rose);color:#fff;font-size:.52rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:3px 10px 3px 8px;clip-path:polygon(6% 0,100% 0,100% 100%,0 100%);}
+.tcb{padding:22px 24px 26px;}
+.tctag{font-size:.54rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:6px;display:block;font-weight:600;}
+.tcn{font-family:'Cinzel',serif;font-size:1.05rem;color:var(--cream);margin-bottom:8px;line-height:1.3;}
+.tcd{font-size:.84rem;color:var(--faded);line-height:1.7;margin-bottom:14px;font-style:italic;}
+.tcl{font-size:.66rem;letter-spacing:2px;text-transform:uppercase;color:var(--rose);font-weight:700;background:none;border:none;cursor:pointer;padding:0;font-family:'Lora',serif;transition:color .22s;}
+.tc:hover .tcl{color:var(--gold);}
+
+/* ══ TOOL PAGE ══ */
+.tp{padding:3rem 5vw 5rem;min-height:calc(100vh - 68px);position:relative;z-index:1;}
+.tph{text-align:center;padding:2rem 2rem 2.6rem;}
+.tpico{font-size:2.8rem;display:block;margin-bottom:10px;filter:drop-shadow(0 0 16px rgba(212,65,92,.4));animation:floatI 3.5s ease-in-out infinite;}
+@keyframes floatI{0%,100%{transform:translateY(0);}50%{transform:translateY(-7px);}}
+.tptag{font-size:.6rem;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}
+.tptit{font-family:'Cormorant Infant',serif;font-size:clamp(2rem,4.5vw,3.6rem);color:var(--cream);font-weight:300;margin-bottom:10px;line-height:1.1;}
+.tptit em{color:var(--rose);font-style:italic;}
+.tpdesc{font-size:.95rem;font-style:italic;color:var(--faded);max-width:440px;margin:0 auto;line-height:1.8;}
+.tprule{width:70px;height:1.5px;background:linear-gradient(90deg,transparent,var(--rose),var(--gold),transparent);margin:18px auto 0;}
+
+/* ══ PANEL ══ */
+.panel{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:26px;margin-bottom:18px;position:relative;overflow:hidden;}
+.panel::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--rose),var(--gold),var(--rose),transparent);}
+.ptit{font-family:'Cinzel',serif;font-size:.83rem;letter-spacing:2px;color:var(--gold);margin-bottom:16px;}
+
+/* ══ FIELDS ══ */
+.f{margin-bottom:15px;}
+.f label{display:block;font-size:.6rem;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:7px;font-weight:600;}
+.f input,.f select,.f textarea{width:100%;background:var(--surf);border:1px solid var(--border);border-radius:4px;padding:10px 13px;font-family:'Lora',serif;font-size:.91rem;color:var(--cream);outline:none;transition:border-color .25s,box-shadow .25s;}
+.f input::placeholder,.f textarea::placeholder{color:var(--faded);font-style:italic;}
+.f input:focus,.f select:focus,.f textarea:focus{border-color:rgba(212,65,92,.5);box-shadow:0 0 0 3px rgba(212,65,92,.07);}
+.f select{appearance:none;cursor:pointer;}
+.f select option{background:var(--card);}
+.f textarea{resize:vertical;line-height:1.7;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:13px;}
+
+/* ══ ICON BTN ══ */
+.ib{width:38px;height:38px;background:var(--surf);border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.88rem;cursor:pointer;transition:all .22s;flex-shrink:0;}
+.ib:hover{background:var(--rose);border-color:var(--rose);transform:scale(1.1);}
+
+/* ══ LINED PAPER ══ */
+.lp{background:repeating-linear-gradient(var(--surf),var(--surf) 33px,rgba(212,65,92,.1) 33px,rgba(212,65,92,.1) 34px);border:1px solid var(--border);border-radius:4px;position:relative;overflow:hidden;}
+.lp::before{content:'';position:absolute;top:0;bottom:0;left:52px;width:1.5px;background:rgba(232,184,109,.1);pointer-events:none;}
+.lp textarea{width:100%;min-height:280px;background:transparent;border:none;outline:none;font-family:'Lora',serif;font-size:.95rem;color:var(--cream);line-height:34px;resize:none;padding:8px 14px 14px 66px;font-style:italic;}
+.lp textarea::placeholder{color:var(--faded);font-style:italic;}
+.ctb{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--surf);border-top:1px solid var(--border);flex-wrap:wrap;gap:8px;}
+.ctl{display:flex;gap:6px;}
+
+/* ══ VAULT ══ */
+.vcats{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:26px;}
+.vcbtn{background:var(--surf);border:1px solid var(--border);color:var(--faded);padding:7px 15px;border-radius:30px;font-family:'Lora',serif;font-size:.72rem;letter-spacing:1px;cursor:pointer;transition:all .24s;}
+.vcbtn:hover,.vcbtn.on{background:var(--rose);border-color:var(--rose);color:#fff;}
+.vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(272px,1fr));gap:14px;}
+.vc{background:var(--card);border:1px solid var(--border);border-radius:7px;padding:20px;cursor:pointer;transition:transform .3s,border-color .24s,box-shadow .3s;position:relative;overflow:hidden;}
+.vc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--grad);transform:scaleX(0);transition:transform .3s;transform-origin:left;}
+.vc:hover{transform:translateY(-5px);border-color:rgba(212,65,92,.36);box-shadow:0 10px 32px rgba(0,0,0,.34);}
+.vc:hover::before{transform:scaleX(1);}
+.vc-cat{font-size:.55rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:6px;display:block;}
+.vc-tit{font-family:'Cinzel',serif;font-size:.92rem;color:var(--cream);margin-bottom:8px;}
+.vc-pre{font-size:.8rem;font-style:italic;color:var(--faded);line-height:1.6;margin-bottom:13px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+.vca{display:flex;gap:12px;}
+.vb{font-size:.65rem;letter-spacing:2px;text-transform:uppercase;font-weight:700;background:none;border:none;cursor:pointer;font-family:'Lora',serif;padding:0;transition:color .22s;}
+.vb-u{color:var(--rose);}.vb-u:hover{color:var(--gold);}
+.vb-s{color:var(--faded);}.vb-s:hover{color:var(--rose);}
+
+/* ══ VERSE ══ */
+.vstg{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:9px;margin-bottom:18px;}
+.vsb{background:var(--surf);border:1px solid var(--border);border-radius:6px;padding:14px 10px;text-align:center;cursor:pointer;transition:all .26s;}
+.vsb:hover,.vsb.on{background:rgba(212,65,92,.1);border-color:rgba(212,65,92,.45);}
+.vsico{font-size:1.42rem;display:block;margin-bottom:4px;}
+.vsn{font-size:.67rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--cream);transition:color .22s;font-family:'Lora',serif;}
+.vsb:hover .vsn,.vsb.on .vsn{color:var(--rose);}
+.pbox{background:var(--surf);border:1px solid var(--border);border-radius:6px;padding:28px 22px;min-height:180px;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Infant',serif;font-size:1.05rem;font-style:italic;color:var(--cream);line-height:2;}
+.pbox .ph{color:var(--faded);font-size:.9rem;}
+.pbox .poem{white-space:pre-line;text-align:center;}
+
+/* ══ POSTBOX ══ */
+.pbw{max-width:680px;margin:0 auto;}
+.ewrap{text-align:center;padding:26px 0 8px;}
+.env{width:250px;height:165px;margin:0 auto;position:relative;background:linear-gradient(155deg,#260e1e,#180812);border:1.5px solid rgba(212,65,92,.3);border-radius:4px;overflow:hidden;box-shadow:0 12px 44px rgba(0,0,0,.55);transition:transform .38s;}
+.eflap{position:absolute;top:0;left:0;right:0;border-left:125px solid transparent;border-right:125px solid transparent;border-top:72px solid #1e0a18;}
+.eseal{position:absolute;top:16px;left:50%;transform:translateX(-50%);width:36px;height:36px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:.9rem;box-shadow:0 0 12px rgba(212,65,92,.5);transition:all .35s;}
+.eto{position:absolute;top:52%;left:50%;transform:translate(-50%,-50%);font-family:'Great Vibes',cursive;font-size:1.15rem;color:rgba(240,218,200,.5);text-align:center;width:80%;margin-top:8px;}
+.ebot{position:absolute;bottom:0;left:0;right:0;height:40px;background:rgba(212,65,92,.04);}
+.estatus{font-size:.72rem;letter-spacing:2px;text-transform:uppercase;color:var(--faded);margin-top:12px;}
+
+/* ══ PLANNER ══ */
+.pgrid{display:grid;grid-template-columns:1fr 1.5fr;gap:18px;}
+.mlist{display:flex;flex-direction:column;gap:10px;}
+.mi{background:var(--card2);border:1px solid var(--border);border-radius:6px;padding:13px 16px;display:flex;align-items:center;justify-content:space-between;transition:border-color .24s,transform .24s;}
+.mi:hover{border-color:rgba(212,65,92,.34);transform:translateX(4px);}
+.mil{display:flex;align-items:center;gap:12px;}
+.miem{font-size:1.4rem;}
+.min{font-family:'Cinzel',serif;font-size:.84rem;color:var(--cream);margin-bottom:2px;}
+.midt{font-size:.7rem;font-style:italic;color:var(--faded);}
+.mir{display:flex;align-items:center;gap:8px;}
+.micd{text-align:right;}
+.midays{font-family:'Cinzel',serif;font-size:1.4rem;line-height:1;}
+.milbl{font-size:.55rem;letter-spacing:2px;text-transform:uppercase;color:var(--faded);}
+.midel{background:none;border:none;color:var(--faded);cursor:pointer;font-size:.84rem;padding:3px;transition:color .2s;}.midel:hover{color:var(--rose);}
+.empty{text-align:center;padding:30px 14px;color:var(--faded);font-style:italic;}
+.eic{font-size:2rem;display:block;margin-bottom:8px;opacity:.3;}
+
+/* ══ DIARY ══ */
+.dgrid{display:grid;grid-template-columns:1fr 1.6fr;gap:18px;}
+.elist{display:flex;flex-direction:column;gap:9px;max-height:520px;overflow-y:auto;padding-right:3px;}
+.elist::-webkit-scrollbar{width:2px;}.elist::-webkit-scrollbar-thumb{background:rgba(212,65,92,.25);border-radius:2px;}
+.ec{background:var(--card2);border:1px solid var(--border);border-radius:6px;padding:12px 14px;cursor:pointer;transition:border-color .24s,transform .24s;position:relative;}
+.ec:hover,.ec.sel{border-color:rgba(212,65,92,.4);transform:translateX(4px);}
+.ec.sel{background:rgba(212,65,92,.05);}
+.ecdt{font-size:.58rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:3px;}
+.ectit{font-family:'Cinzel',serif;font-size:.85rem;color:var(--cream);margin-bottom:3px;}
+.ecpre{font-size:.76rem;font-style:italic;color:var(--faded);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.ecdel{position:absolute;top:10px;right:10px;background:none;border:none;color:var(--faded);cursor:pointer;font-size:.74rem;padding:2px;transition:color .2s;}.ecdel:hover{color:var(--rose);}
+.dreader{background:var(--surf);border:1px solid var(--border);border-radius:6px;padding:22px;min-height:300px;}
+.dr-d{font-size:.58rem;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:6px;}
+.dr-t{font-family:'Cormorant Infant',serif;font-size:1.6rem;color:var(--cream);margin-bottom:13px;line-height:1.15;}
+.dr-b{font-size:.92rem;font-style:italic;color:var(--cream);line-height:1.85;white-space:pre-line;}
+.dr-ph{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:260px;color:var(--faded);font-style:italic;gap:10px;}
+.dr-ph span{font-size:2rem;opacity:.25;}
+
+/* ══ FOOTER ══ */
+footer{background:rgba(4,1,6,.97);border-top:1px solid var(--border);padding:3rem 5vw 1.8rem;position:relative;z-index:1;}
+footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1.5px;background:linear-gradient(90deg,transparent,var(--rose) 30%,var(--gold) 50%,var(--rose) 70%,transparent);}
+.ftop{display:flex;justify-content:space-between;flex-wrap:wrap;gap:26px;margin-bottom:26px;padding-bottom:26px;border-bottom:1px solid rgba(255,255,255,.05);}
+.fbn{font-family:'Great Vibes',cursive;font-size:1.85rem;color:var(--rose);}
+.fbp{font-size:.78rem;font-style:italic;color:var(--faded);margin-top:5px;max-width:180px;line-height:1.65;}
+.fcol h4{font-size:.58rem;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:12px;}
+.fcol button,.fcol a{display:block;font-size:.8rem;color:rgba(240,218,200,.38);text-decoration:none;margin-bottom:6px;transition:color .24s;background:none;border:none;cursor:pointer;text-align:left;font-family:'Lora',serif;padding:0;}
+.fcol button:hover,.fcol a:hover{color:var(--rose);}
+.fbot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
+.fcp{font-size:.66rem;color:rgba(240,218,200,.16);}
+.fhh{color:var(--rose);letter-spacing:5px;font-size:.83rem;animation:hb 1.6s ease-in-out infinite;}
+@keyframes hb{0%,100%{transform:scale(1);}14%{transform:scale(1.28);}28%{transform:scale(1);}44%{transform:scale(1.16);}58%{transform:scale(1);}}
+.fcr{font-size:.66rem;color:rgba(240,218,200,.16);}
+.fcr span{color:var(--rose);font-family:'Great Vibes',cursive;font-size:1rem;}
+
+@media(max-width:780px){.nb{display:none;}.g2{grid-template-columns:1fr;}.pgrid,.dgrid{grid-template-columns:1fr;}#compL{grid-template-columns:1fr!important;}}
+@media(max-width:600px){.cg{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="pLayer"></div>
+<div id="toast"></div>
+
+<!-- ══ SHARE MODAL ══ -->
+<div id="shareOv">
+  <div id="shareMod">
+    <button class="sh-x" id="shX">✕</button>
+    <h2 class="sh-h">Share with Love 💌</h2>
+    <p class="sh-s" id="shS">Share your content with someone special</p>
+    <div class="sh-linkbox">
+      <span class="sh-link-label">🔗 Your shareable link — opens a beautiful page for them</span>
+      <div class="sh-link-row">
+        <input type="text" id="shUrl" readonly placeholder="Generating link…">
+        <button id="shCopy">📋 Copy Link</button>
+      </div>
+      <div class="sh-preview" id="shPrev"></div>
+    </div>
+    <div class="sh-or">— send via —</div>
+    <div class="sh-btns">
+      <a class="shb b-wa" id="shWa" href="#" target="_blank" rel="noopener">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.136.559 4.14 1.535 5.877L0 24l6.303-1.513A11.955 11.955 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.369l-.36-.213-3.737.898.937-3.629-.234-.373A9.818 9.818 0 112 12c0-5.428 4.39-9.818 9.818-9.818 5.428 0 9.818 4.39 9.818 9.818 0 5.428-4.39 9.818-9.818 9.818z"/></svg>
+        WhatsApp
+      </a>
+      <a class="shb b-tg" id="shTg" href="#" target="_blank" rel="noopener">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+        Telegram
+      </a>
+      <a class="shb b-tw" id="shTw" href="#" target="_blank" rel="noopener">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.766l7.73-8.835L1.254 2.25H8.08l4.259 5.63zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        Twitter
+      </a>
+      <a class="shb b-ml" id="shMl" href="#">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Email
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SHARED CONTENT VIEW (shown when URL has #share=...) ══ -->
+<div id="sharedView">
+  <div class="sv-bg"></div>
+  <div id="particles2" style="position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0;"></div>
+  <div class="sv-wrap">
+    <div style="text-align:center;margin-bottom:6px;">
+      <span class="sv-badge" id="svBadge">A Love Letter</span>
+    </div>
+    <div class="sv-anon" id="svAnon" style="display:none;">
+      <span>🕊️ Sent anonymously · Identity protected</span>
+    </div>
+    <h1 class="sv-title" id="svTitle">A Letter for You</h1>
+    <div class="sv-paper">
+      <div class="sv-content" id="svContent">Loading…</div>
+    </div>
+    <div class="sv-seal">💌</div>
+    <div class="sv-actions">
+      <button class="btn b-rose" onclick="window.location.hash='';window.location.reload()">💌 Write Your Own</button>
+      <button class="btn b-gold" id="svReshare">🔗 Share This</button>
+    </div>
+    <div class="sv-credit">
+      <a href="#">LoveLetters.co</a>
+      <p>Made by @thundertechnologyofficial</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══ HEADER ══ -->
+<header id="mainHeader">
+  <div class="hdr-l">
+    <button id="backBtn">← Home</button>
+    <div class="brand" id="brandLogo">
+      <div class="bseal">💌</div>
+      <span class="bname">LoveLetters.co</span>
+    </div>
+  </div>
+  <span id="hdrLabel"></span>
+  <nav>
+    <button class="nb" data-nav="composer">Composer</button>
+    <button class="nb" data-nav="vault">Vault</button>
+    <button class="nb" data-nav="verse">Verse</button>
+    <button class="nb" data-nav="postbox">Postbox</button>
+    <button class="nb" data-nav="planner">Planner</button>
+    <button class="nb" data-nav="diary">Diary</button>
+    <button class="nsb" id="hdrShare">🔗 Share</button>
+  </nav>
+</header>
+
+<main id="mainApp">
+
+<!-- HOME -->
+<div class="view active" id="v-home">
+  <section class="hero">
+    <p class="hl">✦ All-in-One Romance Studio ✦</p>
+    <h1 class="ht">Where Words Become<br><em>Love Itself</em></h1>
+    <p class="hd">Six powerful tools for every kind of love — write, weave, plan and preserve your most beautiful feelings.</p>
+    <div class="ha">
+      <button class="btn b-rose" data-nav="composer">✍️ Start Writing</button>
+      <button class="btn b-gold" id="heroShare">🔗 Share Site</button>
+    </div>
+    <div class="hr"></div>
+  </section>
+  <section class="gs">
+    <p class="sl">✦ Six Tools · One Love ✦</p>
+    <h2 class="st">Choose Your Canvas</h2>
+    <p class="sd">Everything lives right here — no other page needed.</p>
+    <div class="cg">
+      <div class="tc" data-nav="composer"><div class="tcv v1"><span class="tci">✍️</span></div><div class="tcb"><span class="tctag">AI-Inspired</span><h3 class="tcn">Letter Composer</h3><p class="tcd">Write heartfelt letters with guided tone and AI-crafted openings. Share a beautiful link instantly.</p><button class="tcl">Open Composer →</button></div></div>
+      <div class="tc" data-nav="vault"><div class="tcv v2"><span class="tci">📜</span></div><span class="tc-rb">300+</span><div class="tcb"><span class="tctag">Templates</span><h3 class="tcn">Letter Vault</h3><p class="tcd">Browse romantic templates by occasion. One click to load and share as a beautiful page.</p><button class="tcl">Open Vault →</button></div></div>
+      <div class="tc" data-nav="verse"><div class="tcv v3"><span class="tci">🌹</span></div><div class="tcb"><span class="tctag">Poetry</span><h3 class="tcn">Verse Weaver</h3><p class="tcd">Generate sonnets, haikus, acrostics and more. Share your poem as its own beautiful page.</p><button class="tcl">Weave Verse →</button></div></div>
+      <div class="tc" data-nav="postbox"><div class="tcv v4"><span class="tci">🕊️</span></div><span class="tc-rb">Secret</span><div class="tcb"><span class="tctag">Anonymous</span><h3 class="tcn">Secret Postbox</h3><p class="tcd">Write anonymously, seal it, share a mystery link — they open it and read your letter beautifully.</p><button class="tcl">Open Postbox →</button></div></div>
+      <div class="tc" data-nav="planner"><div class="tcv v5"><span class="tci">🕯️</span></div><div class="tcb"><span class="tctag">Reminders</span><h3 class="tcn">Moment Planner</h3><p class="tcd">Save precious dates and count down to every beautiful moment — anniversaries, birthdays, reunions.</p><button class="tcl">Plan Moments →</button></div></div>
+      <div class="tc" data-nav="diary"><div class="tcv v6"><span class="tci">📖</span></div><div class="tcb"><span class="tctag">Private</span><h3 class="tcn">Love Diary</h3><p class="tcd">Keep a private journal. Share any diary entry as a beautiful separate page with one click.</p><button class="tcl">Open Diary →</button></div></div>
+    </div>
+  </section>
+</div>
+
+<!-- COMPOSER -->
+<div class="view" id="v-composer">
+  <div class="tp">
+    <div class="tph"><span class="tpico">✍️</span><p class="tptag">Tool 1 of 6</p><h1 class="tptit">Letter <em>Composer</em></h1><p class="tpdesc">Write with guided tone and occasion. Click ✨ Inspire for an AI-crafted opening.</p><div class="tprule"></div></div>
+    <div id="compL" style="display:grid;grid-template-columns:1fr 1.65fr;gap:18px;">
+      <div>
+        <div class="panel">
+          <div class="ptit">📋 Settings</div>
+          <div class="f"><label>To</label><input type="text" id="cTo" placeholder="My Dearest…"></div>
+          <div class="f"><label>From</label><input type="text" id="cFrom" placeholder="Your name…"></div>
+          <div class="f"><label>Tone</label><select id="cTone"><option>Tender &amp; Warm</option><option>Passionate</option><option>Playful &amp; Flirty</option><option>Poetic &amp; Lyrical</option><option>Sincere Apology</option><option>First Love Confession</option></select></div>
+          <div class="f"><label>Occasion</label><select id="cOcc"><option>Just Because</option><option>Anniversary</option><option>Valentine's Day</option><option>First Love</option><option>Proposal</option><option>Long Distance</option><option>Apology</option></select></div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;">
+            <button class="btn b-rose" id="inspBtn">✨ Inspire Me</button>
+            <button class="btn b-surf" id="clrComp">🗑️ Clear</button>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="panel" style="padding:0;">
+          <div style="padding:12px 16px 9px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;">
+            <span style="font-family:'Great Vibes',cursive;font-size:1.3rem;color:var(--rose);">A Letter</span>
+            <span style="flex:1;height:1px;background:var(--border);"></span>
+            <span id="wc" style="font-size:.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--faded);">0 words</span>
+          </div>
+          <div class="lp" style="border:none;border-radius:0;"><textarea id="cBody" rows="10" placeholder="Begin here… or click ✨ Inspire Me above."></textarea></div>
+          <div class="ctb">
+            <div class="ctl">
+              <button class="ib" id="ibR">🌹</button>
+              <button class="ib" id="ibH">❤️</button>
+              <button class="ib" id="ibS">✒️</button>
+              <button class="ib" id="ibC">📋</button>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button class="btn b-gold" id="compShr">🔗 Share Letter</button>
+              <button class="btn b-rose" id="compSnd">💌 Send Email</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- VAULT -->
+<div class="view" id="v-vault">
+  <div class="tp">
+    <div class="tph"><span class="tpico">📜</span><p class="tptag">Tool 2 of 6</p><h1 class="tptit">Letter <em>Vault</em></h1><p class="tpdesc">Browse templates. Load into Composer or share as a beautiful link.</p><div class="tprule"></div></div>
+    <div class="vcats" id="vCats"></div>
+    <div class="vgrid" id="vGrid"></div>
+  </div>
+</div>
+
+<!-- VERSE -->
+<div class="view" id="v-verse">
+  <div class="tp" style="max-width:780px;margin:0 auto;">
+    <div class="tph"><span class="tpico">🌹</span><p class="tptag">Tool 3 of 6</p><h1 class="tptit">Verse <em>Weaver</em></h1><p class="tpdesc">Choose a style, enter a name, weave a poem — then share it as its own page.</p><div class="tprule"></div></div>
+    <div class="panel">
+      <div class="ptit">🎨 Style</div>
+      <div class="vstg" id="vSt">
+        <button class="vsb on" data-s="Sonnet"><span class="vsico">📖</span><span class="vsn">Sonnet</span></button>
+        <button class="vsb" data-s="Haiku"><span class="vsico">🌸</span><span class="vsn">Haiku</span></button>
+        <button class="vsb" data-s="Free Verse"><span class="vsico">🌊</span><span class="vsn">Free Verse</span></button>
+        <button class="vsb" data-s="Couplets"><span class="vsico">🎵</span><span class="vsn">Couplets</span></button>
+        <button class="vsb" data-s="Ode"><span class="vsico">🏆</span><span class="vsn">Ode</span></button>
+        <button class="vsb" data-s="Acrostic"><span class="vsico">✨</span><span class="vsn">Acrostic</span></button>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="ptit">🖊️ Details</div>
+      <div class="g2">
+        <div class="f"><label>Beloved's Name</label><input type="text" id="vN" placeholder="e.g. Zara, Aarav…"></div>
+        <div class="f"><label>Theme</label><select id="vTh"><option>Eternal Love</option><option>First Glance</option><option>Missing You</option><option>Your Smile</option><option>Our Journey</option><option>Secret Devotion</option></select></div>
+      </div>
+      <button class="btn b-rose" id="weaveBtn">🌹 Weave My Poem</button>
+    </div>
+    <div class="panel" id="poemPanel" style="display:none;">
+      <div class="ptit">📜 Your Poem</div>
+      <div class="pbox" id="poemBox"><span class="ph">Your poem will appear here…</span></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;">
+        <button class="btn b-rose" id="cpPoem">📋 Copy Poem</button>
+        <button class="btn b-gold" id="shPoem">🔗 Share Poem Page</button>
+        <button class="btn b-surf" id="rwPoem">🔄 New Version</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- POSTBOX -->
+<div class="view" id="v-postbox">
+  <div class="tp" style="max-width:700px;margin:0 auto;">
+    <div class="tph"><span class="tpico">🕊️</span><p class="tptag">Tool 4 of 6</p><h1 class="tptit">Secret <em>Postbox</em></h1><p class="tpdesc">Write anonymously. Seal and share a mystery link — they click it and see your letter.</p><div class="tprule"></div></div>
+    <div class="pbw">
+      <div class="ewrap">
+        <div class="env" id="envB"><div class="eflap"></div><div class="eseal" id="eSeal">💌</div><div class="eto" id="eTo">To: Someone Special</div><div class="ebot"></div></div>
+        <div class="estatus" id="eSt">✍️ Composing…</div>
+      </div>
+      <div class="panel">
+        <div class="ptit">📝 Secret Message</div>
+        <div class="f"><label>Addressed To</label><input type="text" id="pbTo" placeholder="My Secret Someone…"></div>
+        <div class="f"><label>Your Message</label><textarea id="pbMsg" rows="6" placeholder="Write freely… no one will know it was you. 💌"></textarea></div>
+        <div class="f"><label>Tone</label><select id="pbTone"><option>Romantic &amp; Tender</option><option>Passionate &amp; Bold</option><option>Playful &amp; Mysterious</option><option>Poetic &amp; Dreamy</option></select></div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;">
+          <button class="btn b-rose" id="sealBtn">🔐 Seal &amp; Share Secret Link</button>
+          <button class="btn b-surf" id="clrPb">🗑️ Clear</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PLANNER -->
+<div class="view" id="v-planner">
+  <div class="tp">
+    <div class="tph"><span class="tpico">🕯️</span><p class="tptag">Tool 5 of 6</p><h1 class="tptit">Moment <em>Planner</em></h1><p class="tpdesc">Save precious dates and count down to every beautiful moment.</p><div class="tprule"></div></div>
+    <div class="pgrid">
+      <div class="panel">
+        <div class="ptit">➕ Add Moment</div>
+        <div class="f"><label>Occasion</label><input type="text" id="mpN" placeholder="e.g. Our Anniversary…"></div>
+        <div class="f"><label>Date</label><input type="date" id="mpD"></div>
+        <div class="f"><label>Emoji</label><select id="mpE"><option value="💕">💕 Anniversary</option><option value="🌹">🌹 Date Night</option><option value="💍">💍 Proposal</option><option value="🎂">🎂 Birthday</option><option value="💌">💌 First Letter</option><option value="✈️">✈️ Reunion</option><option value="🌙">🌙 Special Night</option><option value="⭐">⭐ Custom</option></select></div>
+        <button class="btn b-rose" id="addMom" style="width:100%;justify-content:center;">🕯️ Save Moment</button>
+      </div>
+      <div class="panel">
+        <div class="ptit">📅 Your Moments</div>
+        <div class="mlist" id="momList"><div class="empty"><span class="eic">🕯️</span>No moments yet.</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DIARY -->
+<div class="view" id="v-diary">
+  <div class="tp">
+    <div class="tph"><span class="tpico">📖</span><p class="tptag">Tool 6 of 6</p><h1 class="tptit">Love <em>Diary</em></h1><p class="tpdesc">Your private journal. Share any entry as its own beautiful page with one click.</p><div class="tprule"></div></div>
+    <div class="panel">
+      <div class="ptit">🖊️ New Entry</div>
+      <div class="g2">
+        <div class="f"><label>Title</label><input type="text" id="dTit" placeholder="What's in your heart today…"></div>
+        <div class="f"><label>Mood</label><select id="dMood"><option>💗 Deeply in Love</option><option>🌹 Romantic</option><option>💭 Missing Someone</option><option>✨ Joyful</option><option>💔 Heartbroken</option><option>🌸 Hopeful</option><option>🔥 Passionate</option></select></div>
+      </div>
+      <div class="f"><label>Your Entry</label><textarea id="dBod" rows="5" placeholder="Write your heart out…"></textarea></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn b-rose" id="savEnt">📖 Save Entry</button>
+        <button class="btn b-surf" id="clrDi">🗑️ Clear</button>
+      </div>
+    </div>
+    <div class="dgrid">
+      <div class="panel" style="padding:18px;">
+        <div class="ptit">📚 Entries</div>
+        <div class="elist" id="entList"><div class="empty"><span class="eic">📖</span>No entries yet.</div></div>
+      </div>
+      <div class="panel">
+        <div class="ptit">👁️ Reading</div>
+        <div class="dreader" id="dRead"><div class="dr-ph"><span>📖</span>Select an entry to read it here.</div></div>
+        <div id="dShrRow" style="display:none;margin-top:13px;">
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="btn b-gold" id="shrDi">🔗 Share Entry Page</button>
+            <button class="btn b-surf" id="cpDi">📋 Copy</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="ftop">
+    <div><div class="fbn">LoveLetters.co</div><div class="fbp">All six tools for every kind of love — in one place.</div></div>
+    <div class="fcol"><h4>Tools</h4>
+      <button data-nav="composer">✍️ Letter Composer</button>
+      <button data-nav="vault">📜 Letter Vault</button>
+      <button data-nav="verse">🌹 Verse Weaver</button>
+      <button data-nav="postbox">🕊️ Secret Postbox</button>
+      <button data-nav="planner">🕯️ Moment Planner</button>
+      <button data-nav="diary">📖 Love Diary</button>
+    </div>
+    <div class="fcol"><h4>Share</h4>
+      <button id="ftShr">🔗 Copy Site Link</button>
+      <a id="ftWa" href="#">💬 WhatsApp</a>
+      <a id="ftTg" href="#">✈️ Telegram</a>
+      <a id="ftMl" href="#">📧 Email</a>
+    </div>
+  </div>
+  <div class="fbot">
+    <span class="fcp">© 2025 LoveLetters.co · All rights reserved</span>
+    <div class="fhh">♥ ♥ ♥</div>
+    <span class="fcr">Made with love by <span>@thundertechnologyofficial</span></span>
+  </div>
+</footer>
+
+<script>
+(function(){
+"use strict";
+
+/* ══ CURSOR ══ */
+var cur = document.getElementById('cur');
+document.addEventListener('mousemove', function(e){
+  cur.style.left = e.clientX+'px';
+  cur.style.top  = e.clientY+'px';
+  cur.style.display = 'block';
+});
+document.addEventListener('mouseover', function(e){
+  if(e.target.closest('button,a,input,select,textarea,.tc,.vc,.vsb,.ec,.mi'))
+    cur.classList.add('big');
+});
+document.addEventListener('mouseout', function(e){
+  if(e.target.closest('button,a,input,select,textarea,.tc,.vc,.vsb,.ec,.mi'))
+    cur.classList.remove('big');
+});
+
+/* ══ PARTICLES ══ */
+function makeParticles(layerId){
+  var L = document.getElementById(layerId);
+  if(!L) return;
+  var g = ['💌','🌹','✉️','💗','🌸','💕','✨','🕊️','💝','🌷','❤️','💫'];
+  function sp(){
+    var p=document.createElement('div'); p.className='pt';
+    p.textContent=g[Math.floor(Math.random()*g.length)];
+    p.style.left=Math.random()*100+'vw';
+    p.style.fontSize=(0.5+Math.random()*0.85)+'rem';
+    var d=12+Math.random()*12;
+    p.style.animationDuration=d+'s';
+    p.style.animationDelay=Math.random()*3+'s';
+    L.appendChild(p);
+    setTimeout(function(){if(p.parentNode)p.parentNode.removeChild(p);},(d+4)*1000);
+  }
+  for(var i=0;i<14;i++)(function(ii){setTimeout(sp,ii*200);})(i);
+  setInterval(sp,1800);
+}
+makeParticles('pLayer');
+
+/* ══ TOAST ══ */
+var toastEl=document.getElementById('toast'),toastTmr=null;
+function toast(m,d){
+  toastEl.textContent=m; toastEl.classList.add('on');
+  clearTimeout(toastTmr);
+  toastTmr=setTimeout(function(){toastEl.classList.remove('on');},d||3000);
+}
+
+/* ══ COPY ══ */
+function cp(t){
+  if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){toast('📋 Copied!');}).catch(function(){fbCp(t);});}
+  else fbCp(t);
+}
+function fbCp(t){
+  var ta=document.createElement('textarea');
+  ta.value=t; ta.style.cssText='position:fixed;top:0;left:0;opacity:0;z-index:9999999;';
+  document.body.appendChild(ta); ta.focus(); ta.select();
+  try{document.execCommand('copy');toast('📋 Copied!');}catch(e){toast('⚠️ Copy manually');}
+  document.body.removeChild(ta);
+}
+
+/* ══ URL / SHARE LINK SYSTEM ══
+   Content is encoded as base64 in the URL hash:
+   #share=BASE64(JSON)
+   When someone opens the link they see the beautiful shared view.
+*/
+function encodeShare(data){
+  try{ return btoa(unescape(encodeURIComponent(JSON.stringify(data)))); }
+  catch(e){ return ''; }
+}
+function decodeShare(str){
+  try{ return JSON.parse(decodeURIComponent(escape(atob(str)))); }
+  catch(e){ return null; }
+}
+function buildShareURL(data){
+  var base = window.location.href.split('#')[0];
+  if(base.indexOf('file://')===0) base='https://loveletters.co/';
+  return base+'#share='+encodeShare(data);
+}
+function getSiteURL(){
+  var u=window.location.href.split('#')[0];
+  return u.indexOf('file://')===0?'https://loveletters.co/':u;
+}
+
+/* ══ CHECK FOR SHARED LINK ON LOAD ══ */
+function checkSharedURL(){
+  var hash=window.location.hash||'';
+  if(hash.indexOf('#share=')===0){
+    var encoded=hash.slice(7);
+    var data=decodeShare(encoded);
+    if(data && data.text){
+      showSharedView(data, encoded);
+      return true;
+    }
+  }
+  return false;
+}
+
+function showSharedView(data, encoded){
+  // Hide main app, show shared view
+  document.getElementById('mainHeader').style.display='none';
+  document.getElementById('mainApp').style.display='none';
+  document.querySelector('footer').style.display='none';
+  var sv=document.getElementById('sharedView');
+  sv.style.display='block';
+  sv.classList.add('active');
+  makeParticles('particles2');
+
+  // Fill content
+  var badge = data.type||'Love Letter';
+  var title = data.title||'A Letter for You';
+  document.getElementById('svBadge').textContent='💌 '+badge;
+  document.getElementById('svTitle').textContent=title;
+  document.getElementById('svContent').textContent=data.text;
+
+  if(data.anon){
+    document.getElementById('svAnon').style.display='block';
+  }
+
+  // Re-share button
+  document.getElementById('svReshare').addEventListener('click',function(){
+    var url=buildShareURL(data);
+    openShareModal({type:data.type||'Love Letter',title:title,text:data.text,anon:data.anon},url);
+  });
+}
+
+/* ══ SHARE MODAL ══ */
+var shOv=document.getElementById('shareOv');
+document.getElementById('shX').addEventListener('click',closeShareModal);
+shOv.addEventListener('click',function(e){if(e.target===this)closeShareModal();});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeShareModal();});
+
+function closeShareModal(){
+  shOv.classList.remove('on');
+  document.body.style.overflow='';
+}
+
+function openShareModal(data, customURL){
+  var url = customURL || buildShareURL(data);
+  var label = data.type || 'LoveLetters.co';
+  var credit = '\n\n— Made by @thundertechnologyofficial\n' + url;
+  var msgText = (data.text
+    ? '💌 Someone sent you a ' + label + '!\nOpen this link to read it:\n' + url
+    : '💌 LoveLetters.co — All-in-One Romance Studio!\n' + url) + '\nMade by @thundertechnologyofficial';
+
+  document.getElementById('shUrl').value = url;
+  document.getElementById('shS').textContent = data.text
+    ? '📬 Send this link — when they open it, they see your ' + label + ' on a beautiful page'
+    : 'Share LoveLetters.co with someone special';
+
+  var prev=document.getElementById('shPrev');
+  if(data.text){
+    prev.className='sh-preview vis';
+    prev.textContent=data.text.substring(0,160)+(data.text.length>160?'…':'');
+  } else {
+    prev.className='sh-preview';
+  }
+
+  var em=encodeURIComponent(msgText);
+  var eu=encodeURIComponent(url);
+  var es=encodeURIComponent('💌 A '+label+' for you');
+  document.getElementById('shWa').href='https://wa.me/?text='+em;
+  document.getElementById('shTg').href='https://t.me/share/url?url='+eu+'&text='+em;
+  document.getElementById('shTw').href='https://twitter.com/intent/tweet?text='+em;
+  document.getElementById('shMl').href='mailto:?subject='+es+'&body='+em;
+
+  // footer links (site only)
+  var sm=encodeURIComponent('💌 LoveLetters.co\n'+getSiteURL()+'\nMade by @thundertechnologyofficial');
+  document.getElementById('ftWa').href='https://wa.me/?text='+sm;
+  document.getElementById('ftTg').href='https://t.me/share/url?url='+encodeURIComponent(getSiteURL())+'&text='+sm;
+  document.getElementById('ftMl').href='mailto:?subject=💌 LoveLetters.co&body='+sm;
+
+  shOv.classList.add('on');
+  document.body.style.overflow='hidden';
+}
+
+document.getElementById('shCopy').addEventListener('click',function(){
+  var v=document.getElementById('shUrl').value;
+  cp(v); toast('✅ Link copied! They open it to see the page.');
+});
+
+/* ══ NAV ══ */
+var VNAMES={home:'Home',composer:'Letter Composer',vault:'Letter Vault',verse:'Verse Weaver',postbox:'Secret Postbox',planner:'Moment Planner',diary:'Love Diary'};
+var curV='home';
+function nav(id){
+  document.querySelectorAll('.view').forEach(function(v){v.classList.remove('active');});
+  var el=document.getElementById('v-'+id);
+  if(!el)return;
+  el.classList.add('active'); curV=id;
+  var bb=document.getElementById('backBtn'), hl=document.getElementById('hdrLabel');
+  if(id==='home'){bb.style.display='none';hl.style.display='none';}
+  else{bb.style.display='flex';hl.style.display='block';hl.textContent=VNAMES[id]||'';}
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(id==='vault')renderVault();
+  if(id==='planner')renderMoments();
+  if(id==='diary')renderDiary();
+}
+document.addEventListener('click',function(e){
+  var el=e.target.closest('[data-nav]');
+  if(el)nav(el.dataset.nav);
+});
+document.getElementById('backBtn').addEventListener('click',function(){nav('home');});
+document.getElementById('brandLogo').addEventListener('click',function(){nav('home');});
+
+// share site
+function shareSite(){openShareModal({type:'LoveLetters.co',title:'All-in-One Romance Studio',text:null},getSiteURL());}
+document.getElementById('hdrShare').addEventListener('click',shareSite);
+document.getElementById('heroShare').addEventListener('click',shareSite);
+document.getElementById('ftShr').addEventListener('click',shareSite);
+
+/* ══ COMPOSER ══ */
+var INSP={'Tender & Warm':['From the moment I met you, something warm and certain settled inside me — as though I had finally arrived somewhere I truly belonged.\n\n','There are days when the world feels luminous simply because you are in it. Today is one of those days.\n\n','Being loved by you is the greatest gift of my life, and I want you to know that on this ordinary, beautiful day.\n\n'],'Passionate':['Every time I close my eyes I see you — not as a memory, but as a flame that refuses to be extinguished, burning deep in my chest.\n\n','I did not know I was capable of feeling this much until you turned everything inside me into a storm I never want to survive.\n\n'],'Playful & Flirty':['Fair warning: this letter may cause side effects including blushing, uncontrollable smiling, and the irresistible urge to reply immediately.\n\n','I was going to play it cool — then I remembered I have absolutely no chill when it comes to you.\n\n'],'Poetic & Lyrical':['If love were a landscape, you would be everything — the wide sky, the quiet river, and the light through leaves that makes strangers stop and stare.\n\n','There are poets who spent whole lives hunting for a single true line. I wonder if they were simply waiting to meet someone like you.\n\n'],'Sincere Apology':['I have been holding these words too long, afraid they were not enough. But silence has its own weight, and I owe you more than that.\n\n','Some mistakes do not deserve a list of reasons — they deserve honesty. So here I am, honest, and more sorry than I know how to say.\n\n'],'First Love Confession':['I had a careful life and a measured heart — and then you arrived, entirely unplanned, and rearranged everything.\n\n','I think I am in love with you. I am placing that sentence here, in your hands, hoping you will be gentle with it.\n\n']};
+function updWC(){var w=(document.getElementById('cBody').value.trim().match(/\S+/g)||[]).length;document.getElementById('wc').textContent=w+' word'+(w===1?'':'s');}
+document.getElementById('cBody').addEventListener('input',updWC);
+document.getElementById('inspBtn').addEventListener('click',function(){
+  var t=document.getElementById('cTone').value;
+  var ls=INSP[t]||INSP['Tender & Warm'];
+  var ch=ls[Math.floor(Math.random()*ls.length)];
+  var ta=document.getElementById('cBody'); ta.value=''; var i=0;
+  var iv=setInterval(function(){if(i<ch.length){ta.value+=ch[i];i++;updWC();}else clearInterval(iv);},18);
+  ta.focus();
+});
+document.getElementById('clrComp').addEventListener('click',function(){if(confirm('Clear the letter?')){document.getElementById('cBody').value='';document.getElementById('cTo').value='';document.getElementById('cFrom').value='';updWC();}});
+document.getElementById('ibR').addEventListener('click',function(){var ta=document.getElementById('cBody');ta.value+='\n🌹\n\n';ta.focus();});
+document.getElementById('ibH').addEventListener('click',function(){var ta=document.getElementById('cBody');ta.value+='❤️ ';ta.focus();});
+document.getElementById('ibS').addEventListener('click',function(){var f=document.getElementById('cFrom').value||'Your name';var ta=document.getElementById('cBody');ta.value+='\n\nWith all my love,\n'+f+' ❤️';ta.focus();});
+document.getElementById('ibC').addEventListener('click',function(){var b=document.getElementById('cBody').value.trim();if(!b){toast('✍️ Write something first!');return;}cp(getFullLetter());});
+function getFullLetter(){
+  var to=document.getElementById('cTo').value||'My Dearest';
+  var body=document.getElementById('cBody').value;
+  var from=document.getElementById('cFrom').value;
+  var l='Dear '+to+',\n\n'+body;
+  if(from)l+='\n\nWith love,\n'+from;
+  return l;
+}
+document.getElementById('compShr').addEventListener('click',function(){
+  var b=document.getElementById('cBody').value.trim();
+  if(!b){toast('✍️ Write something first!');return;}
+  var to=document.getElementById('cTo').value||'My Dearest';
+  openShareModal({type:'Love Letter',title:'A Love Letter for '+to,text:getFullLetter()});
+});
+document.getElementById('compSnd').addEventListener('click',function(){
+  var b=document.getElementById('cBody').value.trim();if(!b){toast('✍️ Write something first!');return;}
+  var to=document.getElementById('cTo').value||'My Dearest';
+  window.open('mailto:?subject='+encodeURIComponent('A love letter for '+to+' 💌')+'&body='+encodeURIComponent(getFullLetter()+'\n\n— Sent via LoveLetters.co by @thundertechnologyofficial'),'_blank');
+  toast('💌 Opening mail app…');
+});
+
+/* ══ VAULT ══ */
+var VD=[
+  {cat:'Anniversary',title:'A Thousand Days With You',body:'My love,\n\nA thousand days have passed since you first smiled at me, and every sunrise still carries your name in its light.\n\nA thousand days with you feels like home — like music you have known so long it plays inside your bones.\n\nThank you for every ordinary Tuesday, every late night, every time you chose me without making a show of it. You are my favourite thing about being alive.\n\nWith all the love I have,'},
+  {cat:'Anniversary',title:'Still Falling',body:'Darling,\n\nI fall for you every morning when you reach for your coffee before your phone. I fall for you every time you laugh at your own jokes before finishing them.\n\nToday, on our anniversary: I am still falling. I plan to keep falling for as long as you will let me.\n\nYours, always,'},
+  {cat:'First Love',title:'I Never Expected You',body:'To you,\n\nI never expected to feel this way. I had a careful life, a measured heart — and then you arrived, entirely unplanned, and rearranged everything.\n\nI think I am in love with you. I am placing that sentence here, in your hands, hoping you are gentle with it.\n\nYours nervously,'},
+  {cat:'First Love',title:'Before You, After You',body:'My dearest,\n\nThere is a before and an after, and the line between them is you.\n\nBefore you: I moved through my days competently, even happily — but without the brightness that comes from being truly known. After you: I find beauty in places I did not think to look.\n\nWith a love I am still learning how to hold,'},
+  {cat:'Long Distance',title:'Counting the Hours',body:'My love, far away,\n\nI have gotten quite good at mathematics — distances, time zones, hours until I next hear your voice.\n\nEvery message from you is a small light in a long evening. Distance is not the story. Distance is just the circumstance. The story is us.\n\nCounting down,'},
+  {cat:'Long Distance',title:'You Are Here',body:'To my person, wherever you are,\n\nYou have taught me to find you in the same moon, the same cold morning, the same song playing in two different cities.\n\nIn every way that matters, you are here.\n\nAlways yours,'},
+  {cat:'Apology',title:'I Was Wrong',body:'My love,\n\nI was wrong. Simply, plainly wrong. I let my own fear speak when I should have been quiet.\n\nYou deserve better than what I gave you in that moment. I intend to be the person who knows that from now on.\n\nWith sincerity and sorrow,'},
+  {cat:'Apology',title:'Please Forgive Me',body:'My darling,\n\nI am sorry for the hurt I caused. I am sorry for the thoughtlessness behind it.\n\nIf you give me the chance, I will do better. Not perfectly — I am human — but with my whole heart trying.\n\nHoping to be forgiven,'},
+  {cat:'Proposal',title:'My Answer Is Always You',body:'My love,\n\nForever is not a guarantee. It is a direction. And the direction I want to walk — through every year, every uncertainty — is toward you.\n\nI am asking you to walk with me. Will you?\n\nWith my whole future,'},
+  {cat:'Proposal',title:'One Question',body:'My dearest,\n\nI want to wake up next to you for the rest of the years I have. I want to know how you take your tea, what worries you at night, what makes you laugh until you cannot breathe.\n\nWill you marry me?\n\nHoping with everything,'},
+  {cat:'Just Because',title:'No Reason Needed',body:'My love,\n\nI have no occasion for this letter. It is a Tuesday, and I am writing because I wanted to. Because you deserve to know, on an unremarkable Tuesday, that you are remarkable to me.\n\nThat is all. That was the whole reason.\n\nLovingly, on a Tuesday,'},
+  {cat:'Just Because',title:'I Thought You Should Know',body:'Hello, you,\n\nI thought you should know: you make the world a better place to be in.\n\nThe way you notice small things. The way you ask good questions. The fact that you exist in this world at the same time as me.\n\nI am grateful for it.\n\nWith all my fondness,'}
+];
+var VCATS=['All'];
+var seenC={};
+VD.forEach(function(v){if(!seenC[v.cat]){VCATS.push(v.cat);seenC[v.cat]=1;}});
+var activeCat='All';
+
+function renderVault(){
+  var cEl=document.getElementById('vCats');
+  cEl.innerHTML='';
+  VCATS.forEach(function(c){
+    var b=document.createElement('button');b.className='vcbtn'+(c===activeCat?' on':'');b.textContent=c;b.dataset.vc=c;cEl.appendChild(b);
+  });
+  var filtered=activeCat==='All'?VD:VD.filter(function(v){return v.cat===activeCat;});
+  var g=document.getElementById('vGrid');g.innerHTML='';
+  filtered.forEach(function(v){
+    var d=document.createElement('div');d.className='vc';
+    var cs=document.createElement('span');cs.className='vc-cat';cs.textContent=v.cat;
+    var ti=document.createElement('div');ti.className='vc-tit';ti.textContent=v.title;
+    var pr=document.createElement('div');pr.className='vc-pre';pr.textContent=v.body.replace(/\n/g,' ');
+    var ac=document.createElement('div');ac.className='vca';
+    var ub=document.createElement('button');ub.className='vb vb-u';ub.textContent='✍️ Use in Composer →';
+    ub.addEventListener('click',function(e){e.stopPropagation();nav('composer');document.getElementById('cBody').value=v.body+'\n';updWC();toast('📜 Template loaded!');});
+    var sb=document.createElement('button');sb.className='vb vb-s';sb.textContent='🔗 Share Link';
+    sb.addEventListener('click',function(e){e.stopPropagation();openShareModal({type:'Love Letter',title:v.title,text:v.body});});
+    ac.appendChild(ub);ac.appendChild(sb);
+    d.appendChild(cs);d.appendChild(ti);d.appendChild(pr);d.appendChild(ac);
+    g.appendChild(d);
+  });
+}
+document.getElementById('vCats').addEventListener('click',function(e){
+  var b=e.target.closest('[data-vc]');if(b){activeCat=b.dataset.vc;renderVault();}
+});
+
+/* ══ VERSE ══ */
+var vStyle='Sonnet',lastPoem='';
+document.getElementById('vSt').addEventListener('click',function(e){
+  var b=e.target.closest('[data-s]');if(!b)return;
+  document.querySelectorAll('.vsb').forEach(function(x){x.classList.remove('on');});
+  b.classList.add('on');vStyle=b.dataset.s;
+});
+var PG={
+  Sonnet:function(n,t){var p=['How shall I name the light that fills the air\nWhenever '+n+' draws near and speaks my name?\nIt is not sunlight, though the warmth is there —\nA gentler thing, and kinder than a flame.\n\nI\'ve searched for words that meet the task and fail,\nFor language has its limits, love has none.\nYou are the secret kept inside the gale,\nThe moon that rises long before the sun.\n\nThen let me speak in simple terms and true:\nI love you more each time you turn away,\nAnd more again each time you turn to view\nThe life we\'ve built from ordinary days.\n\n  So long as I draw breath and thought remains,\n  '+n+', you are the anthem in my veins.','If beauty were a country, you\'d be home —\nThe place I find no matter how I roam.\nThey say that time will fade what time has made —\nBut I will stake my certainty on this:\nWhat you and I have built will never fade,\nFor it was built of something older: bliss.\n\n  '+n+', the seasons turn, the years grow long —\n  Yet love for you is where I most belong.'];return p[Math.floor(Math.random()*p.length)];},
+  Haiku:function(n,t){var p=['Your name on my lips —\n'+t+', warm as first spring light —\n'+n+', I am yours.','One glance is enough.\n'+n+' — the whole world goes still.\nThat is how love starts.','Winter, spring, autumn —\nevery season holds your name,\n'+n+', like a prayer.'];return p[Math.floor(Math.random()*p.length)];},
+  'Free Verse':function(n,t){var p=['I have been trying to explain you\nto the parts of myself that knew nothing of love\nbefore you —\n\nand the best I can do is this:\n\nyou are the reason the ordinary world\nhas edges again.\n\n'+n+'.\nJust that.\nJust you.\nJust everything.','There are people who move through the world\nleaving things the way they found them.\n\nAnd then there is '+n+',\nwho walks in\nand quietly rearranges the light.\n\nI became someone who notices light\nonly after meeting you.'];return p[Math.floor(Math.random()*p.length)];},
+  Couplets:function(n,t){return 'When I seek '+t+' I find your face,\nNo other fills this heart\'s deep place.\n\nYour name is music I carry inside,\nIn every turning of every tide.\n\nThe years may mark us, time may move on —\nBut '+n+', love for you carries on.\n\nIn waking and in dream, one truth stays true:\nMy favourite world is any world with you.';},
+  Ode:function(n,t){return 'O '+n+', this ode is yours alone,\nA crown of words no jeweler could hone.\n\nO tender keeper of my softest days,\nYou move through life with your unhurried ways —\nAnd everywhere your passing leaves a trace:\nA warmth that lingers long beyond your face.\n\nOnly this: a voice that says your name\nAnd means: before you I was plain,\nAnd after you, I was not the same.';},
+  Acrostic:function(n,t){var m={A:'Always, I think of you in quiet moments.',B:'Breathing is easier when you are near.',C:'Countless times I have tried to find the words.',D:'Deep in my heart, you are most at home.',E:'Every version of tomorrow holds your face.',F:'Falling for you was the kindest fall.',G:'Gently you changed the whole shape of my world.',H:'Here, in this letter, is where I am most honest.',I:'In all the maps of love, you are true north.',J:'Just your name can set the whole day right.',K:'Kindness learned from you runs through me still.',L:'Love, in the end, is a word that means you.',M:'Mornings are warmer when I think of you.',N:'Nothing I have found comes close to this.',O:'Only with you do I feel fully seen.',P:'Perhaps I was waiting for you all along.',Q:'Quietly you arrived and quietly stayed.',R:'Reaching for you has always felt like home.',S:'Somewhere in every song I hear your voice.',T:'Tenderly, I keep you in my heart.',U:'Under every sky I love you still.',V:'Very softly, love arrived in your form.',W:'With every season — more, never less.',X:'Exactly as you are — that is who I love.',Y:'Years from now, you will still be in my words.',Z:'Zealously I choose you, day after day.'};var nm=n.toUpperCase().replace(/[^A-Z]/g,'');if(!nm)return 'Please enter a name using letters A to Z.';return nm.split('').map(function(l){return l+' — '+(m[l]||'Love itself begins with you.');}).join('\n');}
+};
+function doWeave(){
+  var n=document.getElementById('vN').value.trim()||'my love';
+  var t=document.getElementById('vTh').value;
+  var fn=PG[vStyle];if(!fn)return;
+  var poem=fn(n,t); lastPoem=poem;
+  var box=document.getElementById('poemBox');box.innerHTML='';
+  var div=document.createElement('div');div.className='poem';box.appendChild(div);
+  document.getElementById('poemPanel').style.display='block';
+  var i=0,iv=setInterval(function(){if(i<poem.length){div.textContent+=poem[i];i++;}else clearInterval(iv);},15);
+}
+document.getElementById('weaveBtn').addEventListener('click',doWeave);
+document.getElementById('rwPoem').addEventListener('click',doWeave);
+document.getElementById('cpPoem').addEventListener('click',function(){if(!lastPoem){toast('Generate a poem first!');return;}cp(lastPoem+'\n\n— Written with LoveLetters.co by @thundertechnologyofficial');});
+document.getElementById('shPoem').addEventListener('click',function(){
+  if(!lastPoem){toast('Generate a poem first!');return;}
+  var n=document.getElementById('vN').value.trim()||'Someone Special';
+  openShareModal({type:'Love Poem',title:'A Poem for '+n,text:lastPoem});
+});
+
+/* ══ POSTBOX ══ */
+document.getElementById('pbTo').addEventListener('input',function(){document.getElementById('eTo').textContent='To: '+(this.value||'Someone Special');});
+document.getElementById('sealBtn').addEventListener('click',function(){
+  var msg=document.getElementById('pbMsg').value.trim();
+  if(!msg){toast('💬 Write your message first!');return;}
+  var to=document.getElementById('pbTo').value||'Someone Special';
+  var tone=document.getElementById('pbTone').value;
+  var text='💌 A Secret Letter for '+to+'\nTone: '+tone+'\n\n'+msg;
+  document.getElementById('eSt').textContent='🔐 Sealing…';
+  document.getElementById('envB').style.transform='scale(.92)';
+  setTimeout(function(){
+    document.getElementById('eSeal').textContent='🔐';
+    document.getElementById('envB').style.transform='scale(1)';
+    document.getElementById('eSt').textContent='✅ Sealed! Share the link below.';
+    openShareModal({type:'Secret Letter',title:'A Secret Letter for '+to,text:text,anon:true});
+  },600);
+});
+document.getElementById('clrPb').addEventListener('click',function(){
+  document.getElementById('pbMsg').value='';document.getElementById('pbTo').value='';
+  document.getElementById('eTo').textContent='To: Someone Special';
+  document.getElementById('eSeal').textContent='💌';
+  document.getElementById('eSt').textContent='✍️ Composing…';
+  document.getElementById('envB').style.transform='';
+});
+
+/* ══ PLANNER ══ */
+function getMom(){try{return JSON.parse(localStorage.getItem('ll_m')||'[]');}catch(e){return[];}}
+function savMom(m){try{localStorage.setItem('ll_m',JSON.stringify(m));}catch(e){}}
+function dayUntil(ds){var d=new Date(ds+'T00:00:00');d.setHours(0,0,0,0);var n=new Date();n.setHours(0,0,0,0);return Math.round((d-n)/86400000);}
+document.getElementById('addMom').addEventListener('click',function(){
+  var nm=document.getElementById('mpN').value.trim(),dt=document.getElementById('mpD').value,em=document.getElementById('mpE').value;
+  if(!nm||!dt){toast('Please enter a name and date');return;}
+  var l=getMom();l.push({id:Date.now(),name:nm,date:dt,emoji:em});
+  l.sort(function(a,b){return new Date(a.date)-new Date(b.date);});
+  savMom(l);document.getElementById('mpN').value='';document.getElementById('mpD').value='';
+  renderMoments();toast('🕯️ Moment saved!');
+});
+function renderMoments(){
+  var c=document.getElementById('momList'),l=getMom();
+  if(!l.length){c.innerHTML='<div class="empty"><span class="eic">🕯️</span>No moments yet.</div>';return;}
+  c.innerHTML='';
+  l.forEach(function(m){
+    var d=dayUntil(m.date),lb=d<0?Math.abs(d)+'d ago':d===0?'Today!':d+'d left';
+    var col=d>=0&&d<=7?'var(--rose)':d<0?'var(--faded)':'var(--gold)';
+    var dt=new Date(m.date+'T00:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+    var item=document.createElement('div');item.className='mi';
+    item.innerHTML='<div class="mil"><span class="miem">'+m.emoji+'</span><div><div class="min">'+m.name+'</div><div class="midt">'+dt+'</div></div></div><div class="mir"><div class="micd"><div class="midays" style="color:'+col+'">'+Math.abs(d)+'</div><div class="milbl">'+lb+'</div></div><button class="midel" title="Delete">✕</button></div>';
+    item.querySelector('.midel').addEventListener('click',function(){savMom(getMom().filter(function(x){return x.id!==m.id;}));renderMoments();toast('🗑️ Removed');});
+    c.appendChild(item);
+  });
+}
+
+/* ══ DIARY ══ */
+var selEid=null;
+function getEnt(){try{return JSON.parse(localStorage.getItem('ll_d')||'[]');}catch(e){return[];}}
+function savEnt(a){try{localStorage.setItem('ll_d',JSON.stringify(a));}catch(e){}}
+document.getElementById('savEnt').addEventListener('click',function(){
+  var tit=document.getElementById('dTit').value.trim(),bod=document.getElementById('dBod').value.trim(),mood=document.getElementById('dMood').value;
+  if(!tit||!bod){toast('Please add a title and entry');return;}
+  var ents=getEnt();
+  var e={id:Date.now(),title:tit,body:bod,mood:mood,date:new Date().toISOString()};
+  ents.unshift(e);savEnt(ents);
+  document.getElementById('dTit').value='';document.getElementById('dBod').value='';
+  renderDiary();setTimeout(function(){openEnt(e.id);},110);toast('📖 Entry saved!');
+});
+document.getElementById('clrDi').addEventListener('click',function(){document.getElementById('dTit').value='';document.getElementById('dBod').value='';});
+function openEnt(id){
+  selEid=id;var ents=getEnt();var e=null;
+  for(var i=0;i<ents.length;i++){if(ents[i].id===id){e=ents[i];break;}}
+  if(!e)return;
+  document.querySelectorAll('.ec').forEach(function(c){c.classList.remove('sel');});
+  var el=document.querySelector('[data-eid="'+id+'"]');if(el)el.classList.add('sel');
+  var d=new Date(e.date);
+  document.getElementById('dRead').innerHTML='<div class="dr-d">'+d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'})+' · '+e.mood+'</div><div class="dr-t">'+e.title+'</div><div class="dr-b">'+e.body+'</div>';
+  document.getElementById('dShrRow').style.display='block';
+}
+function renderDiary(){
+  var c=document.getElementById('entList'),ents=getEnt();
+  if(!ents.length){c.innerHTML='<div class="empty"><span class="eic">📖</span>No entries yet.</div>';return;}
+  c.innerHTML='';
+  ents.forEach(function(e){
+    var card=document.createElement('div');card.className='ec'+(e.id===selEid?' sel':'');card.dataset.eid=e.id;
+    card.innerHTML='<button class="ecdel" title="Delete">✕</button><div class="ecdt">'+new Date(e.date).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})+'</div><div class="ectit">'+e.title+'</div><div class="ecpre">'+e.body+'</div>';
+    card.querySelector('.ecdel').addEventListener('click',function(ev){
+      ev.stopPropagation();savEnt(getEnt().filter(function(x){return x.id!==e.id;}));
+      if(selEid===e.id){selEid=null;document.getElementById('dRead').innerHTML='<div class="dr-ph"><span>📖</span>Select an entry to read it here.</div>';document.getElementById('dShrRow').style.display='none';}
+      renderDiary();toast('🗑️ Removed');
+    });
+    card.addEventListener('click',function(){openEnt(e.id);});
+    c.appendChild(card);
+  });
+}
+document.getElementById('shrDi').addEventListener('click',function(){
+  var ents=getEnt();var e=null;for(var i=0;i<ents.length;i++){if(ents[i].id===selEid){e=ents[i];break;}}
+  if(!e){toast('Select an entry first');return;}
+  openShareModal({type:'Diary Entry',title:e.title,text:e.title+'\n'+e.mood+'\n\n'+e.body});
+});
+document.getElementById('cpDi').addEventListener('click',function(){
+  var ents=getEnt();var e=null;for(var i=0;i<ents.length;i++){if(ents[i].id===selEid){e=ents[i];break;}}
+  if(!e){toast('Select an entry first');return;}
+  cp(e.title+'\n'+e.mood+'\n\n'+e.body+'\n\n— LoveLetters.co by @thundertechnologyofficial');
+});
+
+/* ══ RESPONSIVE ══ */
+function fixLayout(){var g=document.getElementById('compL');if(g)g.style.gridTemplateColumns=window.innerWidth<780?'1fr':'1fr 1.65fr';}
+window.addEventListener('resize',fixLayout);fixLayout();
+
+/* ══ INIT FOOTER ══ */
+var fUrl=getSiteURL(),fsm=encodeURIComponent('💌 LoveLetters.co\n'+fUrl+'\nMade by @thundertechnologyofficial'),feu=encodeURIComponent(fUrl);
+document.getElementById('ftWa').href='https://wa.me/?text='+fsm;
+document.getElementById('ftTg').href='https://t.me/share/url?url='+feu+'&text='+fsm;
+document.getElementById('ftMl').href='mailto:?subject=💌 LoveLetters.co&body='+fsm;
+
+/* ══ CHECK URL ON LOAD ══ */
+if(!checkSharedURL()){
+  // normal app
+}
+
+})();
+</script>
+</body>
+</html>
