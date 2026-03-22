@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Love 💖</title>
+
+<style>
+body {
+  margin:0;
+  font-family:sans-serif;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  background: linear-gradient(135deg,#ff9a9e,#fad0c4);
+}
+
+/* Input Screen */
+#start {
+  text-align:center;
+}
+
+input {
+  padding:10px;
+  border-radius:10px;
+  border:none;
+  margin:10px;
+}
+
+button {
+  padding:10px 20px;
+  border:none;
+  border-radius:20px;
+  cursor:pointer;
+}
+
+/* Love Box */
+.container {
+  display:none;
+  text-align:center;
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(10px);
+  padding:30px;
+  border-radius:20px;
+}
+
+#no {
+  position:fixed;
+}
+
+/* Cinematic */
+#cinema {
+  display:none;
+  position:fixed;
+  width:100%;
+  height:100%;
+  background:black;
+  color:white;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  text-align:center;
+}
+
+.heart {
+  position:fixed;
+  animation: float 6s linear infinite;
+}
+
+@keyframes float {
+  from{transform:translateY(100vh);}
+  to{transform:translateY(-10vh);}
+}
+</style>
+</head>
+
+<body>
+
+<!-- 🔐 NAME INPUT -->
+<div id="start">
+  <h2>Enter Your Name 💕</h2>
+  <input id="nameInput" placeholder="Your Name">
+  <br>
+  <button onclick="startLove()">Start 💖</button>
+</div>
+
+<!-- 💖 MAIN -->
+<div class="container">
+  <h1 id="question"></h1>
+  <button onclick="yesClick()">YES 💕</button>
+  <button id="no" onmouseover="moveNo()">NO 😜</button>
+</div>
+
+<!-- 🎬 CINEMA -->
+<div id="cinema">
+  <h1 id="finalText"></h1>
+  <button onclick="copyLink()">Copy Link 💌</button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<script>
+let name = "";
+
+/* 🔗 GET NAME FROM URL */
+const params = new URLSearchParams(window.location.search);
+if(params.get("name")){
+  name = params.get("name");
+  startGame();
+}
+
+/* START BUTTON */
+function startLove(){
+  name = document.getElementById("nameInput").value;
+  if(!name){
+    alert("Enter name 😒");
+    return;
+  }
+
+  // generate share link
+  const link = location.origin + location.pathname + "?name=" + encodeURIComponent(name);
+
+  navigator.clipboard.writeText(link);
+  alert("Link copied 💌 Send it!");
+
+  startGame();
+}
+
+function startGame(){
+  document.getElementById("start").style.display="none";
+  document.querySelector(".container").style.display="block";
+
+  document.getElementById("question").innerText = "Do you love me " + name + "? 💖";
+}
+
+/* QUESTIONS */
+const questions = [
+  "Do you love me",
+  "Will you be mine forever",
+  "Promise you won't leave me",
+  "Say I love you"
+];
+
+let i = 0;
+
+function yesClick(){
+  confetti();
+
+  i++;
+  if(i < questions.length){
+    document.getElementById("question").innerText =
+      questions[i] + " " + name + "? 💕";
+  } else {
+    cinema();
+  }
+}
+
+/* 😈 FIXED NO BUTTON */
+function moveNo(){
+  const btn = document.getElementById("no");
+
+  const maxX = window.innerWidth - btn.offsetWidth - 20;
+  const maxY = window.innerHeight - btn.offsetHeight - 20;
+
+  btn.style.left = Math.random()*maxX + "px";
+  btn.style.top = Math.random()*maxY + "px";
+}
+
+/* 🎬 CINEMA */
+function cinema(){
+  document.querySelector(".container").style.display="none";
+  document.getElementById("cinema").style.display="flex";
+
+  document.getElementById("finalText").innerText =
+    "I Love You " + name + " ❤️";
+
+  setInterval(()=>{
+    confetti({particleCount:80,spread:100});
+  },800);
+
+  // hearts
+  setInterval(()=>{
+    let h = document.createElement("div");
+    h.className="heart";
+    h.innerText="💖";
+    h.style.left=Math.random()*100+"vw";
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),6000);
+  },300);
+}
+
+/* 📋 COPY LINK */
+function copyLink(){
+  const link = location.href;
+  navigator.clipboard.writeText(link);
+  alert("Link copied 💌");
+}
+</script>
+
+</body>
+</html>
